@@ -1,6 +1,10 @@
 package by.com.lifetech.billingapi.services;
 
+import java.net.MalformedURLException;
 import java.time.LocalDateTime;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,10 +21,14 @@ import by.com.lifetech.billingapi.models.dto.RegistrationTypeDto;
 import by.com.lifetech.billingapi.models.dto.TariffDto;
 import by.com.lifetech.billingapi.models.entity.RegistrationHistory;
 import by.com.lifetech.billingapi.models.entity.dictionary.ChannelLocalizations;
+import by.com.lifetech.billingapi.models.enums.ChainType;
 import by.com.lifetech.billingapi.models.enums.Lang;
 import by.com.lifetech.billingapi.models.repository.RegistrationHistoryRepository;
 import by.com.lifetech.billingapi.models.repository.dictionary.ChannelLocalizationsRepository;
 import by.com.lifetech.billingapi.models.repository.dictionary.RegistrationTypeRepository;
+import by.com.lifetech.billingapi.wsdl.ChainResult;
+import by.com.lifetech.billingapi.wsdl.ChainResultElement;
+import by.com.lifetech.billingapi.wsdl.ResultCodeType;
 
 @Service
 public class SubscriberInfoService {
@@ -33,6 +41,9 @@ public class SubscriberInfoService {
 
 	@Autowired
 	private ChannelLocalizationsRepository channelLocalizationsRepository;
+	
+	@Autowired
+	ChainService chainService;
 
 	Logger logger = LoggerFactory.getLogger(SubscriberInfoService.class);
 
@@ -120,6 +131,20 @@ public class SubscriberInfoService {
 			return registrationTypeRepository.findByRegistrationTypeCode(registrationTypeCode).getNameRu();
 		}
 
+	}
+	
+	public List<ChainResultElement> getLhActiveTp(String msisdn) throws BusinessException {
+		Map<String, Object> map = new HashMap<>();
+		map.put("msisdn", msisdn);
+		try {
+			ChainResult chainResult = chainService.executeChain(ChainType.OM,"LH_Active_TP", map);
+			if (!chainResult.getResultCode().equals(ResultCodeType.SUCCESS)) {
+				throw new BusinessException(chainResult.getResultCode().name() + ", RID= " + chainResult.getTransactionId().toString());
+			}
+			return chainResult.getResultList();
+		} catch (MalformedURLException e) {
+			throw new BusinessException("chain error");
+		}
 	}
 
 }

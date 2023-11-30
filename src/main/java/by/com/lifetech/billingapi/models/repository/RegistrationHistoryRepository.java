@@ -1,8 +1,6 @@
 package by.com.lifetech.billingapi.models.repository;
 
 import java.time.LocalDateTime;
-import java.util.List;
-
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Query;
@@ -13,13 +11,6 @@ import by.com.lifetech.billingapi.models.entity.RegistrationHistory;
 
 
 public interface RegistrationHistoryRepository extends CrudRepository<RegistrationHistory, Long> {
-	
-	List<RegistrationHistory> findByRegistrationDateBetweenAndSalesPoint(@Param("startDate") LocalDateTime startDate,
-            @Param("endDate") LocalDateTime endDate, @Param("salesPoint") String salesPoint);
-	
-	List<RegistrationHistory> findByRegistrationDateBetween(@Param("startDate") LocalDateTime startDate,
-            @Param("endDate") LocalDateTime endDate);
-	
 	
 	Page<RegistrationHistory> findAllByRegistrationDateBetween(@Param("startDate") LocalDateTime startDate,
             @Param("endDate") LocalDateTime endDate, Pageable pageable);
