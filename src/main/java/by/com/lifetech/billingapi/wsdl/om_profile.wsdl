@@ -1,0 +1,798 @@
+<wsdl:definitions xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:tns="astelit.ukr:om" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:ns1="http://schemas.xmlsoap.org/soap/http" name="OrderManagement" targetNamespace="astelit.ukr:om">
+<wsdl:types>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:tns="http://chain.api.ws.rtn.idr.astelit.ukr/" targetNamespace="http://chain.api.ws.rtn.idr.astelit.ukr/" version="1.0">
+<xs:element name="executeChain" type="tns:executeChain"/>
+<xs:element name="executeChainResponse" type="tns:executeChainResponse"/>
+<xs:element name="executeDebugChain" type="tns:executeDebugChain"/>
+<xs:element name="executeDebugChainResponse" type="tns:executeDebugChainResponse"/>
+<xs:element name="getChainSignature" type="tns:getChainSignature"/>
+<xs:element name="getChainSignatureResponse" type="tns:getChainSignatureResponse"/>
+<xs:element name="getRegisteredChainsNames" type="tns:getRegisteredChainsNames"/>
+<xs:element name="getRegisteredChainsNamesResponse" type="tns:getRegisteredChainsNamesResponse"/>
+<xs:complexType name="businessError">
+<xs:sequence>
+<xs:element minOccurs="0" name="errorName" type="xs:string"/>
+<xs:element minOccurs="0" name="errorMessage" type="xs:string"/>
+<xs:element minOccurs="0" name="errorDetails" type="xs:string"/>
+</xs:sequence>
+</xs:complexType>
+<xs:complexType name="chainsListResult">
+<xs:complexContent>
+<xs:extension base="tns:generalResult">
+<xs:sequence>
+<xs:element maxOccurs="unbounded" minOccurs="0" name="resultSet" nillable="true" type="xs:string"/>
+</xs:sequence>
+</xs:extension>
+</xs:complexContent>
+</xs:complexType>
+<xs:complexType name="generalResult">
+<xs:sequence>
+<xs:element minOccurs="0" name="buildVersion" type="xs:string"/>
+<xs:element minOccurs="0" name="error" type="xs:string"/>
+<xs:element name="invokationTime" type="xs:long"/>
+<xs:element minOccurs="0" name="resultCode" type="tns:resultCodeType"/>
+<xs:element minOccurs="0" name="resultDescription" type="xs:string"/>
+<xs:element minOccurs="0" name="transactionId" type="xs:anyType"/>
+</xs:sequence>
+</xs:complexType>
+<xs:complexType name="chainSignatureResult">
+<xs:complexContent>
+<xs:extension base="tns:generalResult">
+<xs:sequence>
+<xs:element maxOccurs="unbounded" minOccurs="0" name="inputParameters" nillable="true" type="tns:chainVariableDTO"/>
+<xs:element maxOccurs="unbounded" minOccurs="0" name="outputParameters" nillable="true" type="tns:chainVariableDTO"/>
+</xs:sequence>
+</xs:extension>
+</xs:complexContent>
+</xs:complexType>
+<xs:complexType name="chainVariableDTO">
+<xs:sequence>
+<xs:element minOccurs="0" name="name" type="xs:string"/>
+<xs:element minOccurs="0" name="required" type="xs:string"/>
+<xs:element minOccurs="0" name="type" type="xs:string"/>
+</xs:sequence>
+</xs:complexType>
+<xs:complexType name="chainResult">
+<xs:complexContent>
+<xs:extension base="tns:generalResult">
+<xs:sequence>
+<xs:element maxOccurs="unbounded" minOccurs="0" name="resultList" nillable="true" type="tns:chainResultElement"/>
+<xs:element minOccurs="0" name="businessError" type="tns:businessError"/>
+<xs:element minOccurs="0" name="nodeName" type="xs:string"/>
+<xs:element minOccurs="0" name="serverInfo" type="xs:string"/>
+<xs:element minOccurs="0" name="chainVersion" type="xs:string"/>
+<xs:element maxOccurs="unbounded" minOccurs="0" name="debugLog" nillable="true" type="tns:logEntry"/>
+</xs:sequence>
+</xs:extension>
+</xs:complexContent>
+</xs:complexType>
+<xs:complexType name="chainResultElement">
+<xs:sequence>
+<xs:element minOccurs="0" name="name" type="xs:string"/>
+<xs:element minOccurs="0" name="value" type="xs:anyType"/>
+</xs:sequence>
+</xs:complexType>
+<xs:complexType name="logEntry">
+<xs:sequence>
+<xs:element minOccurs="0" name="context" type="xs:string"/>
+<xs:element minOccurs="0" name="entryType" type="tns:entryType"/>
+<xs:element minOccurs="0" name="execTime" type="xs:long"/>
+<xs:element minOccurs="0" name="message" type="xs:string"/>
+<xs:element minOccurs="0" name="nodeName" type="xs:string"/>
+<xs:element minOccurs="0" name="nodeType" type="xs:string"/>
+<xs:element name="position" type="xs:int"/>
+<xs:element maxOccurs="unbounded" minOccurs="0" name="subEntries" nillable="true" type="tns:logEntry"/>
+</xs:sequence>
+</xs:complexType>
+<xs:complexType name="executeDebugChainResponse">
+<xs:sequence>
+<xs:element minOccurs="0" name="return" type="tns:chainResult"/>
+</xs:sequence>
+</xs:complexType>
+<xs:complexType name="getChainSignatureResponse">
+<xs:sequence>
+<xs:element minOccurs="0" name="return" type="tns:chainSignatureResult"/>
+</xs:sequence>
+</xs:complexType>
+<xs:complexType name="executeDebugChain">
+<xs:sequence>
+<xs:element minOccurs="0" name="chainRequest" type="tns:chainRequest"/>
+</xs:sequence>
+</xs:complexType>
+<xs:complexType name="chainRequest">
+<xs:sequence>
+<xs:element minOccurs="0" name="chainName" type="xs:string"/>
+<xs:element maxOccurs="unbounded" minOccurs="0" name="inputParameters" nillable="true" type="tns:inputParameter"/>
+</xs:sequence>
+</xs:complexType>
+<xs:complexType name="inputParameter">
+<xs:sequence>
+<xs:element minOccurs="0" name="name" type="xs:string"/>
+<xs:element minOccurs="0" name="value" type="xs:anyType"/>
+</xs:sequence>
+</xs:complexType>
+<xs:complexType name="getRegisteredChainsNamesResponse">
+<xs:sequence>
+<xs:element minOccurs="0" name="return" type="tns:chainsListResult"/>
+</xs:sequence>
+</xs:complexType>
+<xs:complexType name="getChainSignature">
+<xs:sequence>
+<xs:element minOccurs="0" name="chainName" type="xs:string"/>
+</xs:sequence>
+</xs:complexType>
+<xs:complexType name="getRegisteredChainsNames">
+<xs:sequence/>
+</xs:complexType>
+<xs:complexType name="executeChainResponse">
+<xs:sequence>
+<xs:element minOccurs="0" name="return" type="tns:chainResult"/>
+</xs:sequence>
+</xs:complexType>
+<xs:complexType name="executeChain">
+<xs:sequence>
+<xs:element minOccurs="0" name="chainRequest" type="tns:chainRequest"/>
+</xs:sequence>
+</xs:complexType>
+<xs:simpleType name="resultCodeType">
+<xs:restriction base="xs:string">
+<xs:enumeration value="SUCCESS"/>
+<xs:enumeration value="VALIDATION_FAILURE"/>
+<xs:enumeration value="CHAIN_ERROR"/>
+<xs:enumeration value="ERROR"/>
+<xs:enumeration value="CHAIN_VALIDATION_FAILURE"/>
+<xs:enumeration value="CHAIN_RUNTIME_ERROR"/>
+<xs:enumeration value="CHAIN_ILLEGAL_STATE"/>
+<xs:enumeration value="CHAIN_DATABASE_ERROR"/>
+<xs:enumeration value="CHAIN_TRANSACTION_ERROR"/>
+<xs:enumeration value="CHAIN_BUSINESS_ERROR"/>
+<xs:enumeration value="CHAIN_SEMAPHORE_BUSY_ERROR"/>
+<xs:enumeration value="CHAIN_SEMAPHORE_MAX_COUNT_REACHED_ERROR"/>
+<xs:enumeration value="CHAIN_UNKNOWN_ERROR"/>
+<xs:enumeration value="PROMO_ILLEGAL_STATE"/>
+<xs:enumeration value="PROMO_INTERNAL_ERROR"/>
+<xs:enumeration value="NOTHING_TO_SHOW"/>
+<xs:enumeration value="PROMO_BUSINESS_ERROR"/>
+<xs:enumeration value="ILLEGAL_STATE"/>
+<xs:enumeration value="PERMIT"/>
+<xs:enumeration value="FORBID_QUOTA"/>
+<xs:enumeration value="FORBID_FILTER"/>
+<xs:enumeration value="ERROR_ALREADY_ROLLED_BACK"/>
+<xs:enumeration value="RULE_DISABLED"/>
+<xs:enumeration value="RULE_NOT_FOUND"/>
+<xs:enumeration value="QUOTA_NOT_FOUND"/>
+<xs:enumeration value="ERROR_REVERT_NOTHING"/>
+</xs:restriction>
+</xs:simpleType>
+<xs:simpleType name="entryType">
+<xs:restriction base="xs:string">
+<xs:enumeration value="START"/>
+<xs:enumeration value="STOP"/>
+<xs:enumeration value="INFO"/>
+<xs:enumeration value="ERROR"/>
+<xs:enumeration value="WARN"/>
+<xs:enumeration value="NODE"/>
+</xs:restriction>
+</xs:simpleType>
+</xs:schema>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:tns="astelit.ukr:om:ws:result" xmlns:ns2="http://chain.api.ws.rtn.idr.astelit.ukr/" xmlns:ns1="astelit.ukr:om" attributeFormDefault="unqualified" elementFormDefault="unqualified" targetNamespace="astelit.ukr:om:ws:result" version="1.0">
+<xs:import namespace="astelit.ukr:om"/>
+<xs:import namespace="http://chain.api.ws.rtn.idr.astelit.ukr/"/>
+<xs:element name="chainExecutionResult" type="tns:chainExecutionResult"/>
+<xs:element name="generalResult" type="tns:generalResult"/>
+<xs:complexType name="fulfillResult">
+<xs:complexContent>
+<xs:extension base="tns:generalResult">
+<xs:sequence>
+<xs:element maxOccurs="unbounded" minOccurs="0" name="products" nillable="true" type="xs:anyType"/>
+</xs:sequence>
+</xs:extension>
+</xs:complexContent>
+</xs:complexType>
+<xs:complexType name="generalResult">
+<xs:sequence>
+<xs:element minOccurs="0" name="commonResult" type="tns:result"/>
+<xs:element minOccurs="0" name="invokeTime" type="xs:long"/>
+<xs:element minOccurs="0" name="transactionId" type="xs:anyType"/>
+<xs:element name="resultByAppenders">
+<xs:complexType>
+<xs:sequence>
+<xs:element maxOccurs="unbounded" minOccurs="0" name="entry">
+<xs:complexType>
+<xs:sequence>
+<xs:element minOccurs="0" name="key" type="xs:string"/>
+<xs:element minOccurs="0" name="value" type="tns:result"/>
+</xs:sequence>
+</xs:complexType>
+</xs:element>
+</xs:sequence>
+</xs:complexType>
+</xs:element>
+<xs:element minOccurs="0" name="scenarioError" type="tns:scenarioErrorResult"/>
+</xs:sequence>
+</xs:complexType>
+<xs:complexType name="result">
+<xs:sequence>
+<xs:element minOccurs="0" name="resultCode" type="xs:string"/>
+<xs:element minOccurs="0" name="resultBusinessCode" type="xs:string"/>
+<xs:element minOccurs="0" name="resultDescription" type="xs:string"/>
+</xs:sequence>
+</xs:complexType>
+<xs:complexType name="scenarioErrorResult">
+<xs:sequence>
+<xs:element minOccurs="0" name="code" type="xs:string"/>
+<xs:element minOccurs="0" name="description" type="xs:string"/>
+</xs:sequence>
+</xs:complexType>
+<xs:complexType name="generalOperateResult">
+<xs:complexContent>
+<xs:extension base="tns:generalResult">
+<xs:sequence>
+<xs:element maxOccurs="unbounded" minOccurs="0" name="chainResults" nillable="true" type="tns:chainExecutionResult"/>
+<xs:element minOccurs="0" name="chainName" type="xs:string"/>
+</xs:sequence>
+</xs:extension>
+</xs:complexContent>
+</xs:complexType>
+<xs:complexType name="chainExecutionResult">
+<xs:sequence>
+<xs:element minOccurs="0" name="code" type="tns:resultCode"/>
+<xs:element minOccurs="0" name="error" type="xs:string"/>
+<xs:element maxOccurs="unbounded" minOccurs="0" name="result" nillable="true" type="ns1:chainVar"/>
+<xs:element minOccurs="0" name="chain" type="xs:string"/>
+<xs:element minOccurs="0" name="businessError" type="ns2:businessError"/>
+</xs:sequence>
+</xs:complexType>
+<xs:complexType name="flexInstallmentResult">
+<xs:complexContent>
+<xs:extension base="tns:generalResult">
+<xs:sequence>
+<xs:element maxOccurs="unbounded" minOccurs="0" name="flexibleInstallments" nillable="true" type="ns1:flexibleInstallment"/>
+</xs:sequence>
+</xs:extension>
+</xs:complexContent>
+</xs:complexType>
+<xs:complexType name="getProductOfferingsResult">
+<xs:complexContent>
+<xs:extension base="tns:generalResult">
+<xs:sequence>
+<xs:element maxOccurs="unbounded" minOccurs="0" name="productOfferingsList" nillable="true" type="xs:anyType"/>
+</xs:sequence>
+</xs:extension>
+</xs:complexContent>
+</xs:complexType>
+<xs:complexType name="getAvailableProductOfferingsResult">
+<xs:complexContent>
+<xs:extension base="tns:generalResult">
+<xs:sequence>
+<xs:element maxOccurs="unbounded" minOccurs="0" name="availableProductOfferingsList" nillable="true" type="xs:anyType"/>
+</xs:sequence>
+</xs:extension>
+</xs:complexContent>
+</xs:complexType>
+<xs:complexType name="getProductsResult">
+<xs:complexContent>
+<xs:extension base="tns:generalResult">
+<xs:sequence>
+<xs:element maxOccurs="unbounded" minOccurs="0" name="productList" nillable="true" type="xs:anyType"/>
+</xs:sequence>
+</xs:extension>
+</xs:complexContent>
+</xs:complexType>
+<xs:simpleType name="resultCode">
+<xs:restriction base="xs:string">
+<xs:enumeration value="SUCCESS"/>
+<xs:enumeration value="INTERNAL_ERROR"/>
+<xs:enumeration value="CHAIN_ERROR"/>
+</xs:restriction>
+</xs:simpleType>
+</xs:schema>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:tns="astelit.ukr:om:ws:in" xmlns:ns1="astelit.ukr:om" attributeFormDefault="unqualified" elementFormDefault="unqualified" targetNamespace="astelit.ukr:om:ws:in" version="1.0">
+<xs:import namespace="astelit.ukr:om"/>
+<xs:complexType name="fulfillRequest">
+<xs:complexContent>
+<xs:extension base="tns:searchKeyGeneralRequest">
+<xs:sequence>
+<xs:element minOccurs="0" name="product" type="xs:anyType"/>
+</xs:sequence>
+</xs:extension>
+</xs:complexContent>
+</xs:complexType>
+<xs:complexType name="searchKeyGeneralRequest">
+<xs:complexContent>
+<xs:extension base="tns:generalRequest">
+<xs:sequence>
+<xs:element minOccurs="0" name="searchKey" type="ns1:searchKey"/>
+</xs:sequence>
+</xs:extension>
+</xs:complexContent>
+</xs:complexType>
+<xs:complexType name="generalRequest">
+<xs:sequence>
+<xs:element minOccurs="0" name="profileId" type="xs:string"/>
+<xs:element minOccurs="0" name="channel" type="xs:string"/>
+</xs:sequence>
+</xs:complexType>
+<xs:complexType name="operateProductRequest">
+<xs:complexContent>
+<xs:extension base="tns:searchKeyGeneralRequest">
+<xs:sequence>
+<xs:element minOccurs="0" name="agent" type="xs:string"/>
+<xs:element minOccurs="0" name="product" type="xs:anyType"/>
+</xs:sequence>
+</xs:extension>
+</xs:complexContent>
+</xs:complexType>
+<xs:complexType name="getProductsRequest">
+<xs:complexContent>
+<xs:extension base="tns:searchKeyGeneralRequest">
+<xs:sequence>
+<xs:element minOccurs="0" name="productOfferingId" type="xs:string"/>
+</xs:sequence>
+</xs:extension>
+</xs:complexContent>
+</xs:complexType>
+</xs:schema>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:tns="astelit.ukr:om" xmlns:ns2="astelit.ukr:om:ws:result" xmlns:ns1="astelit.ukr:om:ws:in" attributeFormDefault="unqualified" elementFormDefault="unqualified" targetNamespace="astelit.ukr:om" version="1.0">
+<xs:import namespace="astelit.ukr:om:ws:in"/>
+<xs:import namespace="astelit.ukr:om:ws:result"/>
+<xs:element name="atomicMarketSegment" type="tns:atomicMarketSegment"/>
+<xs:element name="atomicMarketSegmentCharacteristic" type="tns:atomicMarketSegmentCharacteristic"/>
+<xs:element name="atomicProductSpecification" type="tns:atomicProductSpecification"/>
+<xs:element name="fulfill" type="tns:fulfill"/>
+<xs:element name="fulfillResponse" type="tns:fulfillResponse"/>
+<xs:element name="getAvailableProductOfferings" type="tns:getAvailableProductOfferings"/>
+<xs:element name="getAvailableProductOfferingsResponse" type="tns:getAvailableProductOfferingsResponse"/>
+<xs:element name="getFlexInstallments" type="tns:getFlexInstallments"/>
+<xs:element name="getFlexInstallmentsResponse" type="tns:getFlexInstallmentsResponse"/>
+<xs:element name="getProductOfferings" type="tns:getProductOfferings"/>
+<xs:element name="getProductOfferingsResponse" type="tns:getProductOfferingsResponse"/>
+<xs:element name="getProducts" type="tns:getProducts"/>
+<xs:element name="getProductsResponse" type="tns:getProductsResponse"/>
+<xs:element name="marketSegmentCharacteristicValue" type="tns:marketSegmentCharacteristicValue"/>
+<xs:element name="operateProduct" type="tns:operateProduct"/>
+<xs:element name="operateProductResponse" type="tns:operateProductResponse"/>
+<xs:element name="prodSpecCharValueUse" type="tns:prodSpecCharValueUse"/>
+<xs:element name="productCharacteristicValue" type="tns:productCharacteristicValue"/>
+<xs:element name="productComponent" type="tns:productComponent"/>
+<xs:element name="productSpecCharUse" type="tns:productSpecCharUse"/>
+<xs:element name="productSpecCharacteristic" type="tns:productSpecCharacteristic"/>
+<xs:element name="productSpecCharacteristicValue" type="tns:productSpecCharacteristicValue"/>
+<xs:element name="simpleProductOffering" type="tns:simpleProductOffering"/>
+<xs:element name="timePeriod" type="tns:timePeriod"/>
+<xs:complexType name="fulfill">
+<xs:sequence>
+<xs:element minOccurs="0" name="fulfillRequest" type="ns1:fulfillRequest"/>
+</xs:sequence>
+</xs:complexType>
+<xs:complexType name="productComponent">
+<xs:sequence>
+<xs:element minOccurs="0" name="name" type="xs:string"/>
+<xs:element minOccurs="0" name="description" type="xs:string"/>
+<xs:element minOccurs="0" name="productSerialNumber" type="xs:string"/>
+<xs:element minOccurs="0" name="productStatus" type="xs:string"/>
+<xs:element minOccurs="0" name="productSpecification" type="tns:atomicProductSpecification"/>
+<xs:element minOccurs="0" name="productOffering" type="tns:simpleProductOffering"/>
+<xs:element maxOccurs="unbounded" minOccurs="0" name="productCharacteristicValue" type="tns:productCharacteristicValue"/>
+</xs:sequence>
+</xs:complexType>
+<xs:complexType name="atomicProductSpecification">
+<xs:sequence>
+<xs:element minOccurs="0" name="name" type="xs:string"/>
+<xs:element minOccurs="0" name="brand" type="xs:string"/>
+<xs:element minOccurs="0" name="description" type="xs:string"/>
+<xs:element minOccurs="0" name="productNumber" type="xs:string"/>
+<xs:element minOccurs="0" name="lifecycleStatus" type="xs:string"/>
+</xs:sequence>
+<xs:attribute name="id" type="xs:ID"/>
+</xs:complexType>
+<xs:complexType name="simpleProductOffering">
+<xs:sequence>
+<xs:element minOccurs="0" name="id" type="xs:string"/>
+<xs:element minOccurs="0" name="description" type="xs:string"/>
+<xs:element minOccurs="0" name="status" type="xs:string"/>
+<xs:element minOccurs="0" name="productSpecification" type="tns:atomicProductSpecification"/>
+<xs:element maxOccurs="unbounded" minOccurs="0" name="productSpecCharUse" type="tns:productSpecCharUse"/>
+<xs:element maxOccurs="unbounded" minOccurs="0" name="distributionChannels" nillable="true" type="tns:distributionChannel"/>
+<xs:element maxOccurs="unbounded" minOccurs="0" name="marketSegment" type="tns:atomicMarketSegment"/>
+</xs:sequence>
+</xs:complexType>
+<xs:complexType name="productSpecCharUse">
+<xs:sequence>
+<xs:element minOccurs="0" name="name" type="xs:string"/>
+<xs:element minOccurs="0" name="description" type="xs:string"/>
+<xs:element minOccurs="0" name="package" type="xs:boolean"/>
+<xs:element minOccurs="0" name="minCardinality" type="xs:int"/>
+<xs:element minOccurs="0" name="maxCardinality" type="xs:int"/>
+<xs:element minOccurs="0" name="productSpecCharacteristic" type="tns:productSpecCharacteristic"/>
+<xs:element maxOccurs="unbounded" minOccurs="0" name="prodSpecCharValueUse" type="tns:prodSpecCharValueUse"/>
+</xs:sequence>
+<xs:attribute name="canBeOveridden" type="xs:boolean"/>
+<xs:attribute name="extensible" type="xs:boolean"/>
+<xs:attribute name="unique" type="xs:string"/>
+<xs:attribute name="id" type="xs:ID"/>
+</xs:complexType>
+<xs:complexType name="productSpecCharacteristic">
+<xs:sequence>
+<xs:element minOccurs="0" name="description" type="xs:string"/>
+<xs:element minOccurs="0" name="name" type="xs:string"/>
+<xs:element minOccurs="0" name="valueType" type="xs:string"/>
+<xs:element minOccurs="0" name="minCardinality" type="xs:int"/>
+<xs:element minOccurs="0" name="maxCardinality" type="xs:int"/>
+<xs:element minOccurs="0" name="derivationFormula" type="xs:string"/>
+</xs:sequence>
+<xs:attribute name="unique" type="xs:string"/>
+<xs:attribute name="extensible" type="xs:boolean"/>
+<xs:attribute name="uniqueIdentifier" type="xs:string"/>
+<xs:attribute name="id" type="xs:ID"/>
+</xs:complexType>
+<xs:complexType name="prodSpecCharValueUse">
+<xs:sequence>
+<xs:element minOccurs="0" name="productSpecCharacteristicValue" type="tns:productSpecCharacteristicValue"/>
+<xs:element minOccurs="0" name="productSpecCharUse" type="xs:IDREF"/>
+</xs:sequence>
+<xs:attribute name="id" type="xs:long"/>
+<xs:attribute name="default" type="xs:boolean"/>
+</xs:complexType>
+<xs:complexType name="productSpecCharacteristicValue">
+<xs:sequence>
+<xs:element minOccurs="0" name="value" type="xs:string"/>
+<xs:element minOccurs="0" name="unitOfMeasure" type="xs:string"/>
+<xs:element minOccurs="0" name="rangeInterval" type="xs:string"/>
+<xs:element minOccurs="0" name="valueFrom" type="xs:string"/>
+<xs:element minOccurs="0" name="valueTo" type="xs:string"/>
+<xs:element minOccurs="0" name="valueType" type="xs:string"/>
+<xs:element minOccurs="0" name="productSpecCharacteristic" type="xs:IDREF"/>
+</xs:sequence>
+<xs:attribute name="id" type="xs:long"/>
+<xs:attribute name="default" type="xs:boolean"/>
+</xs:complexType>
+<xs:complexType name="distributionChannel">
+<xs:sequence>
+<xs:element minOccurs="0" name="name" type="xs:string"/>
+<xs:element minOccurs="0" name="id" type="xs:string"/>
+<xs:element minOccurs="0" name="uid" type="xs:long"/>
+<xs:element minOccurs="0" name="channelSpecification" type="tns:distributionChannelSpecification"/>
+</xs:sequence>
+</xs:complexType>
+<xs:complexType name="distributionChannelSpecification">
+<xs:sequence>
+<xs:element minOccurs="0" name="id" type="xs:long"/>
+<xs:element minOccurs="0" name="name" type="xs:string"/>
+<xs:element maxOccurs="unbounded" minOccurs="0" name="characteristics" nillable="true" type="tns:distributionChannelCharacteristic"/>
+</xs:sequence>
+</xs:complexType>
+<xs:complexType name="distributionChannelCharacteristic">
+<xs:sequence>
+<xs:element minOccurs="0" name="id" type="xs:string"/>
+<xs:element minOccurs="0" name="name" type="xs:string"/>
+<xs:element minOccurs="0" name="description" type="xs:string"/>
+<xs:element minOccurs="0" name="minCardinality" type="xs:int"/>
+<xs:element minOccurs="0" name="maxCardinality" type="xs:int"/>
+<xs:element maxOccurs="unbounded" minOccurs="0" name="values" nillable="true" type="tns:distributionChannelCharacteristicValue"/>
+</xs:sequence>
+</xs:complexType>
+<xs:complexType name="distributionChannelCharacteristicValue">
+<xs:sequence>
+<xs:element minOccurs="0" name="id" type="xs:long"/>
+<xs:element minOccurs="0" name="value" type="xs:string"/>
+<xs:element minOccurs="0" name="validFor" type="tns:timePeriod"/>
+</xs:sequence>
+</xs:complexType>
+<xs:complexType name="timePeriod">
+<xs:sequence>
+<xs:element minOccurs="0" name="startDateTime" type="xs:dateTime"/>
+<xs:element minOccurs="0" name="endDateTime" type="xs:dateTime"/>
+</xs:sequence>
+</xs:complexType>
+<xs:complexType name="atomicMarketSegment">
+<xs:sequence>
+<xs:element minOccurs="0" name="name" type="xs:string"/>
+<xs:element minOccurs="0" name="description" type="xs:string"/>
+<xs:element minOccurs="0" name="validFor" type="tns:timePeriod"/>
+<xs:element minOccurs="0" name="marketSegmentCategory" type="xs:string"/>
+<xs:element minOccurs="0" name="marketSegmentSubCategory" type="xs:string"/>
+<xs:element maxOccurs="unbounded" minOccurs="0" name="marketSegmentCharacteristics" type="tns:atomicMarketSegmentCharacteristic"/>
+<xs:element maxOccurs="unbounded" minOccurs="0" name="marketSegmentCharacteristicValues" type="tns:marketSegmentCharacteristicValue"/>
+</xs:sequence>
+<xs:attribute name="id" type="xs:string"/>
+</xs:complexType>
+<xs:complexType name="atomicMarketSegmentCharacteristic">
+<xs:sequence>
+<xs:element minOccurs="0" name="uid" type="xs:long"/>
+<xs:element minOccurs="0" name="name" type="xs:string"/>
+<xs:element minOccurs="0" name="minCardinality" type="xs:int"/>
+<xs:element minOccurs="0" name="maxCardinality" type="xs:int"/>
+<xs:element minOccurs="0" name="description" type="xs:string"/>
+<xs:element minOccurs="0" name="valueType" type="xs:string"/>
+<xs:element minOccurs="0" name="derivationFormula" type="xs:string"/>
+<xs:element minOccurs="0" name="validFor" type="tns:timePeriod"/>
+<xs:element maxOccurs="unbounded" minOccurs="0" name="marketSegmentCharacteristicValues" nillable="true" type="tns:marketSegmentCharacteristicValue"/>
+</xs:sequence>
+<xs:attribute name="id" type="xs:string"/>
+<xs:attribute name="unique" type="xs:string"/>
+<xs:attribute name="extensible" type="xs:boolean"/>
+</xs:complexType>
+<xs:complexType name="marketSegmentCharacteristicValue">
+<xs:sequence>
+<xs:element minOccurs="0" name="value" type="xs:string"/>
+<xs:element minOccurs="0" name="valueType" type="xs:string"/>
+<xs:element minOccurs="0" name="fromValue" type="xs:string"/>
+<xs:element minOccurs="0" name="toValue" type="xs:string"/>
+<xs:element minOccurs="0" name="unitOfMeasure" type="xs:string"/>
+<xs:element minOccurs="0" name="rangeInterval" type="xs:string"/>
+<xs:element minOccurs="0" name="validFor" type="tns:timePeriod"/>
+</xs:sequence>
+<xs:attribute name="default" type="xs:boolean"/>
+</xs:complexType>
+<xs:complexType name="bundledProductOffering">
+<xs:sequence>
+<xs:element maxOccurs="unbounded" minOccurs="0" name="productSpecCharUse" type="tns:productSpecCharUse"/>
+<xs:element minOccurs="0" name="description" type="xs:string"/>
+<xs:element maxOccurs="unbounded" minOccurs="0" name="distributionChannels" nillable="true" type="tns:distributionChannel"/>
+<xs:element minOccurs="0" name="id" type="xs:string"/>
+<xs:element maxOccurs="unbounded" minOccurs="0" name="marketSegment" type="tns:atomicMarketSegment"/>
+<xs:element minOccurs="0" name="productSpecification" type="tns:atomicProductSpecification"/>
+<xs:element minOccurs="0" name="status" type="xs:string"/>
+</xs:sequence>
+</xs:complexType>
+<xs:complexType name="productCharacteristicValue">
+<xs:sequence>
+<xs:element minOccurs="0" name="productSpecCharacteristic" type="tns:productSpecCharacteristic"/>
+<xs:element minOccurs="0" name="productSpecCharacteristicValue" type="tns:productSpecCharacteristicValue"/>
+<xs:element maxOccurs="unbounded" minOccurs="0" name="productCharacteristicValue" type="tns:productCharacteristicValue"/>
+<xs:element minOccurs="0" name="value" type="xs:string"/>
+</xs:sequence>
+</xs:complexType>
+<xs:complexType name="productBundle">
+<xs:sequence>
+<xs:element minOccurs="0" name="bundledProductOffering" type="tns:bundledProductOffering"/>
+<xs:element minOccurs="0" name="description" type="xs:string"/>
+<xs:element minOccurs="0" name="name" type="xs:string"/>
+<xs:element minOccurs="0" name="product" type="xs:anyType"/>
+<xs:element minOccurs="0" name="productOffering" type="tns:simpleProductOffering"/>
+<xs:element minOccurs="0" name="productSerialNumber" type="xs:string"/>
+<xs:element minOccurs="0" name="productSpecification" type="tns:atomicProductSpecification"/>
+<xs:element minOccurs="0" name="productStatus" type="xs:string"/>
+<xs:element maxOccurs="unbounded" minOccurs="0" name="productCharacteristicValue" type="tns:productCharacteristicValue"/>
+</xs:sequence>
+</xs:complexType>
+<xs:complexType name="searchKey">
+<xs:sequence>
+<xs:element name="values">
+<xs:complexType>
+<xs:sequence>
+<xs:element maxOccurs="unbounded" minOccurs="0" name="entry">
+<xs:complexType>
+<xs:sequence>
+<xs:element minOccurs="0" name="key" type="xs:string"/>
+<xs:element minOccurs="0" name="value" type="xs:string"/>
+</xs:sequence>
+</xs:complexType>
+</xs:element>
+</xs:sequence>
+</xs:complexType>
+</xs:element>
+</xs:sequence>
+</xs:complexType>
+<xs:complexType name="fulfillResponse">
+<xs:sequence>
+<xs:element minOccurs="0" name="response" type="ns2:fulfillResult"/>
+</xs:sequence>
+</xs:complexType>
+<xs:complexType name="operateProduct">
+<xs:sequence>
+<xs:element minOccurs="0" name="operateProductRequest" type="ns1:operateProductRequest"/>
+</xs:sequence>
+</xs:complexType>
+<xs:complexType name="operateProductResponse">
+<xs:sequence>
+<xs:element minOccurs="0" name="response" type="ns2:generalOperateResult"/>
+</xs:sequence>
+</xs:complexType>
+<xs:complexType name="chainVar">
+<xs:sequence>
+<xs:element minOccurs="0" name="varName" type="xs:string"/>
+<xs:element minOccurs="0" name="varValue" type="xs:anyType"/>
+</xs:sequence>
+</xs:complexType>
+<xs:complexType name="getFlexInstallments">
+<xs:sequence>
+<xs:element minOccurs="0" name="searchKeyGeneralRequest" type="ns1:searchKeyGeneralRequest"/>
+</xs:sequence>
+</xs:complexType>
+<xs:complexType name="getFlexInstallmentsResponse">
+<xs:sequence>
+<xs:element minOccurs="0" name="response" type="ns2:flexInstallmentResult"/>
+</xs:sequence>
+</xs:complexType>
+<xs:complexType name="flexibleInstallment">
+<xs:sequence>
+<xs:element name="accountId" type="xs:long"/>
+<xs:element minOccurs="0" name="contractId" type="xs:string"/>
+<xs:element minOccurs="0" name="deviceCost" type="xs:decimal"/>
+<xs:element minOccurs="0" name="deviceCostDiscount" type="xs:decimal"/>
+<xs:element minOccurs="0" name="deviceName" type="xs:string"/>
+<xs:element minOccurs="0" name="discountValue" type="xs:decimal"/>
+<xs:element minOccurs="0" name="expirationDate" type="xs:dateTime"/>
+<xs:element minOccurs="0" name="imei" type="xs:string"/>
+<xs:element minOccurs="0" name="insertDate" type="xs:dateTime"/>
+<xs:element minOccurs="0" name="m1" type="xs:decimal"/>
+<xs:element minOccurs="0" name="m10" type="xs:decimal"/>
+<xs:element minOccurs="0" name="m11" type="xs:decimal"/>
+<xs:element minOccurs="0" name="m12" type="xs:decimal"/>
+<xs:element minOccurs="0" name="m13" type="xs:decimal"/>
+<xs:element minOccurs="0" name="m14" type="xs:decimal"/>
+<xs:element minOccurs="0" name="m15" type="xs:decimal"/>
+<xs:element minOccurs="0" name="m16" type="xs:decimal"/>
+<xs:element minOccurs="0" name="m17" type="xs:decimal"/>
+<xs:element minOccurs="0" name="m18" type="xs:decimal"/>
+<xs:element minOccurs="0" name="m2" type="xs:decimal"/>
+<xs:element minOccurs="0" name="m3" type="xs:decimal"/>
+<xs:element minOccurs="0" name="m4" type="xs:decimal"/>
+<xs:element minOccurs="0" name="m5" type="xs:decimal"/>
+<xs:element minOccurs="0" name="m6" type="xs:decimal"/>
+<xs:element minOccurs="0" name="m7" type="xs:decimal"/>
+<xs:element minOccurs="0" name="m8" type="xs:decimal"/>
+<xs:element minOccurs="0" name="m9" type="xs:decimal"/>
+<xs:element minOccurs="0" name="msisdn" type="xs:string"/>
+<xs:element name="oblPeriods" type="xs:long"/>
+</xs:sequence>
+</xs:complexType>
+<xs:complexType name="getProductOfferings">
+<xs:sequence>
+<xs:element minOccurs="0" name="getProductOfferingsRequest" type="ns1:generalRequest"/>
+</xs:sequence>
+</xs:complexType>
+<xs:complexType name="getProductOfferingsResponse">
+<xs:sequence>
+<xs:element minOccurs="0" name="response" type="ns2:getProductOfferingsResult"/>
+</xs:sequence>
+</xs:complexType>
+<xs:complexType name="getAvailableProductOfferings">
+<xs:sequence>
+<xs:element minOccurs="0" name="GetAvailableProductOfferingsRequest" type="ns1:fulfillRequest"/>
+</xs:sequence>
+</xs:complexType>
+<xs:complexType name="getAvailableProductOfferingsResponse">
+<xs:sequence>
+<xs:element minOccurs="0" name="response" type="ns2:getAvailableProductOfferingsResult"/>
+</xs:sequence>
+</xs:complexType>
+<xs:complexType name="getProducts">
+<xs:sequence>
+<xs:element minOccurs="0" name="getProductsRequest" type="ns1:getProductsRequest"/>
+</xs:sequence>
+</xs:complexType>
+<xs:complexType name="getProductsResponse">
+<xs:sequence>
+<xs:element minOccurs="0" name="response" type="ns2:getProductsResult"/>
+</xs:sequence>
+</xs:complexType>
+</xs:schema>
+</wsdl:types>
+<wsdl:message name="fulfill">
+<wsdl:part element="tns:fulfill" name="parameters"> </wsdl:part>
+</wsdl:message>
+<wsdl:message name="operateProduct">
+<wsdl:part element="tns:operateProduct" name="parameters"> </wsdl:part>
+</wsdl:message>
+<wsdl:message name="getFlexInstallments">
+<wsdl:part element="tns:getFlexInstallments" name="parameters"> </wsdl:part>
+</wsdl:message>
+<wsdl:message name="getFlexInstallmentsResponse">
+<wsdl:part element="tns:getFlexInstallmentsResponse" name="parameters"> </wsdl:part>
+</wsdl:message>
+<wsdl:message name="getProductOfferings">
+<wsdl:part element="tns:getProductOfferings" name="parameters"> </wsdl:part>
+</wsdl:message>
+<wsdl:message name="fulfillResponse">
+<wsdl:part element="tns:fulfillResponse" name="parameters"> </wsdl:part>
+</wsdl:message>
+<wsdl:message name="getAvailableProductOfferings">
+<wsdl:part element="tns:getAvailableProductOfferings" name="parameters"> </wsdl:part>
+</wsdl:message>
+<wsdl:message name="getAvailableProductOfferingsResponse">
+<wsdl:part element="tns:getAvailableProductOfferingsResponse" name="parameters"> </wsdl:part>
+</wsdl:message>
+<wsdl:message name="getProducts">
+<wsdl:part element="tns:getProducts" name="parameters"> </wsdl:part>
+</wsdl:message>
+<wsdl:message name="operateProductResponse">
+<wsdl:part element="tns:operateProductResponse" name="parameters"> </wsdl:part>
+</wsdl:message>
+<wsdl:message name="getProductOfferingsResponse">
+<wsdl:part element="tns:getProductOfferingsResponse" name="parameters"> </wsdl:part>
+</wsdl:message>
+<wsdl:message name="getProductsResponse">
+<wsdl:part element="tns:getProductsResponse" name="parameters"> </wsdl:part>
+</wsdl:message>
+<wsdl:portType name="OrderManagementService">
+<wsdl:operation name="fulfill">
+<wsdl:input message="tns:fulfill" name="fulfill"> </wsdl:input>
+<wsdl:output message="tns:fulfillResponse" name="fulfillResponse"> </wsdl:output>
+</wsdl:operation>
+<wsdl:operation name="operateProduct">
+<wsdl:input message="tns:operateProduct" name="operateProduct"> </wsdl:input>
+<wsdl:output message="tns:operateProductResponse" name="operateProductResponse"> </wsdl:output>
+</wsdl:operation>
+<wsdl:operation name="getFlexInstallments">
+<wsdl:input message="tns:getFlexInstallments" name="getFlexInstallments"> </wsdl:input>
+<wsdl:output message="tns:getFlexInstallmentsResponse" name="getFlexInstallmentsResponse"> </wsdl:output>
+</wsdl:operation>
+<wsdl:operation name="getProductOfferings">
+<wsdl:input message="tns:getProductOfferings" name="getProductOfferings"> </wsdl:input>
+<wsdl:output message="tns:getProductOfferingsResponse" name="getProductOfferingsResponse"> </wsdl:output>
+</wsdl:operation>
+<wsdl:operation name="getAvailableProductOfferings">
+<wsdl:input message="tns:getAvailableProductOfferings" name="getAvailableProductOfferings"> </wsdl:input>
+<wsdl:output message="tns:getAvailableProductOfferingsResponse" name="getAvailableProductOfferingsResponse"> </wsdl:output>
+</wsdl:operation>
+<wsdl:operation name="getProducts">
+<wsdl:input message="tns:getProducts" name="getProducts"> </wsdl:input>
+<wsdl:output message="tns:getProductsResponse" name="getProductsResponse"> </wsdl:output>
+</wsdl:operation>
+</wsdl:portType>
+<wsdl:binding name="OrderManagementSoapBinding" type="tns:OrderManagementService">
+<soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+<wsdl:operation name="fulfill">
+<soap:operation soapAction="" style="document"/>
+<wsdl:input name="fulfill">
+<soap:body use="literal"/>
+</wsdl:input>
+<wsdl:output name="fulfillResponse">
+<soap:body use="literal"/>
+</wsdl:output>
+</wsdl:operation>
+<wsdl:operation name="operateProduct">
+<soap:operation soapAction="" style="document"/>
+<wsdl:input name="operateProduct">
+<soap:body use="literal"/>
+</wsdl:input>
+<wsdl:output name="operateProductResponse">
+<soap:body use="literal"/>
+</wsdl:output>
+</wsdl:operation>
+<wsdl:operation name="getFlexInstallments">
+<soap:operation soapAction="" style="document"/>
+<wsdl:input name="getFlexInstallments">
+<soap:body use="literal"/>
+</wsdl:input>
+<wsdl:output name="getFlexInstallmentsResponse">
+<soap:body use="literal"/>
+</wsdl:output>
+</wsdl:operation>
+<wsdl:operation name="getProductOfferings">
+<soap:operation soapAction="" style="document"/>
+<wsdl:input name="getProductOfferings">
+<soap:body use="literal"/>
+</wsdl:input>
+<wsdl:output name="getProductOfferingsResponse">
+<soap:body use="literal"/>
+</wsdl:output>
+</wsdl:operation>
+<wsdl:operation name="getAvailableProductOfferings">
+<soap:operation soapAction="" style="document"/>
+<wsdl:input name="getAvailableProductOfferings">
+<soap:body use="literal"/>
+</wsdl:input>
+<wsdl:output name="getAvailableProductOfferingsResponse">
+<soap:body use="literal"/>
+</wsdl:output>
+</wsdl:operation>
+<wsdl:operation name="getProducts">
+<soap:operation soapAction="" style="document"/>
+<wsdl:input name="getProducts">
+<soap:body use="literal"/>
+</wsdl:input>
+<wsdl:output name="getProductsResponse">
+<soap:body use="literal"/>
+</wsdl:output>
+</wsdl:operation>
+</wsdl:binding>
+<wsdl:service name="OrderManagement">
+<wsdl:port binding="tns:OrderManagementSoapBinding" name="OrderManagementPort">
+<soap:address location="http://172.16.210.60:8220/astelit-om-ws/om-services/om"/>
+</wsdl:port>
+</wsdl:service>
+</wsdl:definitions>

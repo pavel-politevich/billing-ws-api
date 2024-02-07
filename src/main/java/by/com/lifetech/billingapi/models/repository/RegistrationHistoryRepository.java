@@ -25,11 +25,11 @@ public interface RegistrationHistoryRepository extends CrudRepository<Registrati
 			+ "and (:category is null or c.category = :category) "
 			+ "and (:contractCode is null or c.contractCode = :contractCode) "
 			+ "and (:registrationType is null or c.registrationType = :registrationType) "
-			+ "and (c.entryDate between :startDate and :endDate) "
+			+ "and (c.entryDate between TO_DATE(:startDate,'yyyy-MM-dd') and TO_DATE(:endDate,'yyyy-MM-dd')) "
 			)
 	Page<RegistrationHistory> findAllByFields(
-			@Param("startDate") LocalDateTime startDate,
-            @Param("endDate") LocalDateTime endDate, 
+			@Param("startDate") String startDate,
+            @Param("endDate") String endDate, 
             @Param("salesPoint") String salesPoint,
             @Param("tariff") String tariff,
             @Param("agent") String agent,

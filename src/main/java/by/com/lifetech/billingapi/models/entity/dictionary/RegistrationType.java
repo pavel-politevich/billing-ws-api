@@ -1,5 +1,6 @@
 package by.com.lifetech.billingapi.models.entity.dictionary;
 
+import by.com.lifetech.billingapi.models.enums.Lang;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
@@ -13,7 +14,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class RegistrationType {
+public class RegistrationType implements CodeNameDictionary {
 	@Id
 	@Column(name="REGISTRATION_TYPE_CODE")
 	private String registrationTypeCode;
@@ -26,4 +27,15 @@ public class RegistrationType {
 	
 	@Column(name="DESCRIPTION")
 	private String description;
+	
+	public String getNameByLang(Lang lang) {
+		switch (lang) {
+		case RU:
+			return this.nameRu;
+		case EN:
+			return this.nameEn;
+		default:
+			return this.nameRu;
+		}
+	}
 }

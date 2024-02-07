@@ -11,6 +11,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import by.com.lifetech.billingapi.exceptions.BusinessException;
 import by.com.lifetech.billingapi.models.enums.ChainType;
 import by.com.lifetech.billingapi.wsdl.ChainAPI;
 import by.com.lifetech.billingapi.wsdl.ChainAPI_Service;
@@ -40,13 +41,13 @@ public class ChainService {
 
 	Logger logger = LoggerFactory.getLogger(ChainService.class);
 
-	public ChainResult executeChain(ChainType chainType, String chainName, Map<String, Object> inputParams)
-			throws MalformedURLException {
+	public ChainResult executeChain(ChainType chainType, String chainName, Map<String, Object> inputParams) throws BusinessException
+			 {
 
 		List<InputParameter> inputParameters = new ArrayList<InputParameter>();
 		inputParams.forEach((k, v) -> inputParameters.add(new InputParameter(k, v)));
 
-		logger.info("execute chain {} name {} with params: {}", chainType, chainName, inputParams);
+		logger.info("START execute chain {} name {} with params: {}", chainType, chainName, inputParams);
 
 		String url = switch (chainType) {
 		case OM -> chainOmUrl;
@@ -55,7 +56,12 @@ public class ChainService {
 		default -> chainOmUrl;
 		};
 
-		ChainAPI_Service service = new ChainAPI_Service(new URL(url));
+		ChainAPI_Service service;
+		try {
+			service = new ChainAPI_Service(new URL(url));
+		} catch (MalformedURLException e) {
+			throw new BusinessException("chain api service is temporarily unavailable");
+		}
 
 		ChainAPI port = service.getChainAPIPort();
 		BindingProvider binding = (BindingProvider) port;
@@ -72,7 +78,7 @@ public class ChainService {
 		String transactionId = chainResult.getTransactionId().toString();
 		List<ChainResultElement> resList = chainResult.getResultList();
 
-		logger.info("resultCode: {}, transactionId: {}, resultList: {}", resultCode, transactionId, resList);
+		logger.info("STOP execute chain {} - resultCode: {}, transactionId: {}, resultList: {}", chainName, resultCode, transactionId, resList);
 
 		return chainResult;
 

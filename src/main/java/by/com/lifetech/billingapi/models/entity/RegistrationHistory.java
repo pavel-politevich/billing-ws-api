@@ -20,7 +20,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Entity
-//@Component
 @Table(name = "REGISTRATIONS_HISTORY")
 @Data
 @NoArgsConstructor
