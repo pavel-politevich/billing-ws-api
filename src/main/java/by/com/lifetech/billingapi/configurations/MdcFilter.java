@@ -1,9 +1,8 @@
 package by.com.lifetech.billingapi.configurations;
 
 import java.io.IOException;
-import java.util.UUID;
 
-import by.com.lifetech.billingapi.configurations.properties.TransactionIdConfig;
+import by.com.lifetech.billingapi.configurations.properties.LogInfoConfig;
 import org.slf4j.MDC;
 
 import jakarta.servlet.FilterChain;
@@ -15,24 +14,18 @@ import jakarta.servlet.http.HttpServletResponse;
 
 @WebFilter
 public class MdcFilter extends HttpFilter {
-	
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 1196284995672260349L;
+    private static final long serialVersionUID = 1196284995672260349L;
 
-	@Override
+    @Override
     protected void doFilter(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
-      throws IOException, ServletException {
+            throws IOException, ServletException {
         try {
-            MDC.put(TransactionIdConfig.TRANSACTION_ID_NAME, getCorrelationId());
+            MDC.put(LogInfoConfig.TRANSACTION_ID_NAME, LogInfoConfig.getCorrelationId());
+            MDC.put(LogInfoConfig.CURRENT_USER_NAME, LogInfoConfig.getCurrentUserName());
             filterChain.doFilter(request, response);
         } finally {
-            MDC.remove(TransactionIdConfig.TRANSACTION_ID_NAME);
+            MDC.remove(LogInfoConfig.TRANSACTION_ID_NAME);
+            MDC.remove(LogInfoConfig.CURRENT_USER_NAME);
         }
-    }
-
-    private String getCorrelationId() {
-        return UUID.randomUUID().toString();
     }
 }

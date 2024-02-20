@@ -16,4 +16,11 @@ public class LineLevelDto {
 	@Schema(description = "Line level name", example = "Postpaid")
 	private String name;
 
+	public LineLevelDto(String code) {
+		super();
+		this.code = code;
+		this.name = "";
+	}
+
+	
 }

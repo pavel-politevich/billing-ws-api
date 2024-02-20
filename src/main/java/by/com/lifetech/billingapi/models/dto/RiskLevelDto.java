@@ -15,4 +15,11 @@ public class RiskLevelDto {
 
 	@Schema(description = "Level risk name", example = "Public official")
 	private String name;
+
+	public RiskLevelDto(String code) {
+		super();
+		this.code = code;
+		this.name = "";
+	}
+	
 }

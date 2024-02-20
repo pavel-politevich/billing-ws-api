@@ -38,4 +38,9 @@ public class RegistrationType implements CodeNameDictionary {
 			return this.nameRu;
 		}
 	}
+
+	@Override
+	public String getCode() {
+		return registrationTypeCode;
+	}
 }

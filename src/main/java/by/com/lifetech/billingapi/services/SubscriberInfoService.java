@@ -3,6 +3,7 @@ package by.com.lifetech.billingapi.services;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -11,6 +12,10 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import by.com.lifetech.billingapi.exceptions.BusinessException;
 import by.com.lifetech.billingapi.models.dto.CategoryDto;
@@ -82,6 +87,8 @@ public class SubscriberInfoService {
 	private String defaultChannel;
 
 	final static DateTimeFormatter CUSTOM_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+	
+	private final ObjectMapper objectMapper = new ObjectMapper();
 
 	public ServiceResponseDto<Page<RegistrationHistory>> getRegistrationHistory(RegHistoryRequestDto req, Pageable page)
 			throws BusinessException {
@@ -162,62 +169,62 @@ public class SubscriberInfoService {
 		return serviceResponse;
 	}
 
-	public ServiceResponseDto<SubscriberInfDto> getSubscriberInf(String msisdn, String locale) throws BusinessException {
+	public ServiceResponseDto<List<SubscriberInfDto>> getSubscriberInf(String valueSearch, String locale) throws BusinessException {
 
-		logger.info("Start calling getSubscriberInf with msisdn: {}", msisdn);
+		// valueSearch - 12 digits for MSISDN, 18-19 for ICCID and 9 for contract number
+		logger.info("Start calling getSubscriberInf with valueSearch: {}", valueSearch);
 
 		Lang lang = Lang.getByValue(locale);
 		Map<String, Object> map = new HashMap<>();
-		map.put("msisdn", msisdn);
-		ChainResult chainResult = chainService.executeChain(ChainType.CIM, "getSubscriberInf", map);
+		map.put("valueSearch", valueSearch);
+		ChainResult chainResult = chainService.executeChain(ChainType.CIM, "getSubscriberInfList", map);
+		ServiceResponseDto<List<SubscriberInfDto>> serviceResponse = new ServiceResponseDto<List<SubscriberInfDto>>();
 
 		if (!chainResult.getResultCode().equals(ResultCodeType.SUCCESS)) {
-			throw new BusinessException("Billing chain service error");
+			serviceResponse.setDefaultErrorResponse();
+			serviceResponse.setResultDescription("Subscriber not found");
+			return serviceResponse;
 		}
-
-		SubscriberInfDto subscriberInfDto = new SubscriberInfDto(chainResult.getResultList());
-		subscriberInfDto.setMsisdn(msisdn);
-
-		map.clear();
-		map.put("MSISDN", msisdn);
-		map.put("TypeOfPayment", "3");
-
-		chainResult = chainService.executeChain(ChainType.FM, "ServiceInfoChecking", map);
-
-		if (!chainResult.getResultCode().equals(ResultCodeType.SUCCESS)) {
-			logger.warn("Error while getting rec sum for msisdn: {}", msisdn);
-		}
-
-		chainResult.getResultList().stream().filter(el -> el.getName().equals("Debt")).findFirst()
-				.ifPresent(v -> subscriberInfDto.setRecAmount(Double.parseDouble(v.getValue().toString())));
-
-		subscriberInfDto.getTariff()
-				.setName(dictionaryService.getChannelLocalName(subscriberInfDto.getTariff().getCode(), lang));
-
-		contractTypeRepository.findByCode(subscriberInfDto.getContractType().getCode())
-				.ifPresent(name -> subscriberInfDto.getContractType().setName(name.getNameByLang(lang)));
-
-		subscriberSegmentRepository.findByCode(subscriberInfDto.getSegment().getCode())
-				.ifPresent(name -> subscriberInfDto.getSegment().setName(name.getNameByLang(lang)));
-
-		String state = subscriberInfDto.getState().getCode();
-		String stateCode = state.substring(0, state.indexOf("/", 5));
-		String reasonCode = state.substring(state.indexOf('/', 5) + 1);
-
-		subscriberStateRepository.findByCodeAndReason(stateCode, reasonCode)
-				.ifPresent(name -> subscriberInfDto.getState().setName(name.getNameByLang(lang)));
-
-		levelRiskFraudRepository.findByCode(subscriberInfDto.getRiskLevel().getCode())
-				.ifPresent(name -> subscriberInfDto.getRiskLevel().setName(name.getNameByLang(lang)));
-
-		subscriptionTypeRepository.findByCode(subscriberInfDto.getLineLevel().getCode())
-				.ifPresent(name -> subscriberInfDto.getLineLevel().setName(name.getNameByLang(lang)));
-
-		logger.info("Stop calling getSubscriberInf. Result: {}", subscriberInfDto.toString());
 		
-		ServiceResponseDto<SubscriberInfDto> serviceResponse = new ServiceResponseDto<SubscriberInfDto>();
+		List<SubscriberInfDto> subscriberInfDtoList = null;
+		try {
+			subscriberInfDtoList = objectMapper.readValue(chainResult.getResultList().stream()
+					.filter(el -> el.getName().equals("LIST_ACCOUNTS")).findFirst().get().getValue().toString(),
+					new TypeReference<List<SubscriberInfDto>>(){});
+		} catch (JsonProcessingException e) {
+			logger.error("Can not parse chain response. Error: {}", e.getMessage());
+			serviceResponse.setDefaultErrorResponse();
+			serviceResponse.setResultDescription("Error receiving subscriber");
+			return serviceResponse;
+		}
+		
+		
+		for (SubscriberInfDto sub : subscriberInfDtoList) {
+
+			sub.getTariff().setName(dictionaryService.getChannelLocalName(sub.getTariff().getCode(), lang));
+
+			contractTypeRepository.findByCode(sub.getContractType().getCode())
+					.ifPresent(name -> sub.getContractType().setName(name.getNameByLang(lang)));
+
+			subscriberSegmentRepository.findByCode(sub.getSegment().getCode())
+					.ifPresent(name -> sub.getSegment().setName(name.getNameByLang(lang)));
+
+			String state = sub.getState().getCode();
+			String stateCode = state.substring(0, state.indexOf("/", 5));
+			String reasonCode = state.substring(state.indexOf('/', 5) + 1);
+			subscriberStateRepository.findByCodeAndReason(stateCode, reasonCode)
+					.ifPresent(name -> sub.getState().setName(name.getNameByLang(lang)));
+
+			levelRiskFraudRepository.findByCode(sub.getRiskLevel().getCode())
+					.ifPresent(name -> sub.getRiskLevel().setName(name.getNameByLang(lang)));
+
+			subscriptionTypeRepository.findByCode(sub.getLineLevel().getCode())
+					.ifPresent(name -> sub.getLineLevel().setName(name.getNameByLang(lang)));
+		}
+
+		logger.info("Stop calling getSubscriberInf. Result: {}", subscriberInfDtoList.toString());
 		serviceResponse.setDefaultSuccessResponse();
-		serviceResponse.setResultMap(subscriberInfDto);
+		serviceResponse.setResultMap(subscriberInfDtoList);
 		
 		return serviceResponse;
 	}

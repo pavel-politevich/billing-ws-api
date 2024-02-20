@@ -1,6 +1,8 @@
 package by.com.lifetech.billingapi.controllers.v1;
 
 import by.com.lifetech.billingapi.models.dto.service_response.ServiceResponseDto;
+
+import java.util.List;
 import java.util.Map;
 
 import org.slf4j.Logger;
@@ -14,6 +16,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -29,7 +32,11 @@ import by.com.lifetech.billingapi.models.dto.SubscriberInfDto;
 import by.com.lifetech.billingapi.models.dto.THistoryRequestDto;
 import by.com.lifetech.billingapi.models.entity.RegistrationHistory;
 import by.com.lifetech.billingapi.models.entity.TransactionHistory;
+import by.com.lifetech.billingapi.models.entity.dictionary.UniversalDictionaryImpl;
+import by.com.lifetech.billingapi.models.enums.DictName;
+import by.com.lifetech.billingapi.models.enums.Lang;
 import by.com.lifetech.billingapi.services.ChainService;
+import by.com.lifetech.billingapi.services.DictionaryService;
 import by.com.lifetech.billingapi.services.SubscriberInfoService;
 import by.com.lifetech.billingapi.services.SubscriberOperationsService;
 import by.com.lifetech.billingapi.wsdl.ChainResult;
@@ -47,6 +54,9 @@ public class BillingController {
 
 	@Autowired
 	SubscriberInfoService subscriberInfoService;
+	
+	@Autowired
+	DictionaryService dictionaryService;
 
 	@Autowired
 	SubscriberOperationsService subscriberOperationsService;
@@ -56,6 +66,9 @@ public class BillingController {
 	
 	@Autowired
 	private CacheManager cacheManager;
+	
+	@Autowired
+	private PasswordEncoder passwordEncoder;
 
 	@Hidden
 	@GetMapping("/test")
@@ -111,15 +124,28 @@ public class BillingController {
 
 	@Operation(summary = "Get subscriber", description = "Subscriber info from billing")
 	@GetMapping(value = "/subscriber", produces = MediaType.APPLICATION_JSON_VALUE)
-	ResponseEntity<ServiceResponseDto<SubscriberInfDto>> getSubscriber(@RequestParam("msisdn") String msisdn,
+	ResponseEntity<ServiceResponseDto<List<SubscriberInfDto>>> getSubscriber(@RequestParam("valueSearch") String valueSearch,
 			@RequestParam("lang") String lang) throws BusinessException {
-		return ResponseEntity.ok(subscriberInfoService.getSubscriberInf(msisdn, lang));
+		return ResponseEntity.ok(subscriberInfoService.getSubscriberInf(valueSearch, lang));
 	}
 	
 	@Operation(summary = "Operations with subscriber services", description = "Order, Reorder, Refuse")
 	@PostMapping("/services")
 	ResponseEntity<ServiceResponseDto<Map<String, Object>>> executeFulFill(@RequestBody ServiceOperationsRequestDto req) throws BusinessException {
 		return ResponseEntity.ok(subscriberOperationsService.serviceOperation(req));
+	}
+	
+	@Operation(summary = "Get dictionaries", description = "find values from the dictionary by name")
+	@GetMapping("/dictionaries")
+	ResponseEntity<ServiceResponseDto<List<UniversalDictionaryImpl>>> findDictionary(@RequestParam("value") String value,
+			@RequestParam("dictName") DictName dictName, @RequestParam("lang") Lang lang) {
+		return ResponseEntity.ok(dictionaryService.getDictByName(dictName, value, lang));
+	}
+	
+	@Hidden
+	@GetMapping(value = "/gen_pass", produces = MediaType.TEXT_PLAIN_VALUE)
+	ResponseEntity<String> generatePass(@RequestParam("pass") String pass) {
+		return ResponseEntity.ok(passwordEncoder.encode(pass));
 	}
 
 }

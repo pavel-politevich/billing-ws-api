@@ -1,5 +1,6 @@
 package by.com.lifetech.billingapi.models.repository.dictionary;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.cache.annotation.Cacheable;
@@ -7,6 +8,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
 
+import by.com.lifetech.billingapi.models.entity.dictionary.AbstracDictionary;
 import by.com.lifetech.billingapi.models.entity.dictionary.SubscriberState;
 
 public interface SubscriberStateRepository extends CrudRepository<SubscriberState, String> {
@@ -21,5 +23,8 @@ public interface SubscriberStateRepository extends CrudRepository<SubscriberStat
 			+ "where ROWNUM <= 1", nativeQuery = true
 			)
 	Optional<SubscriberState> findByCodeAndReason(@Param("code") String code, @Param("reason") String reason);
+	
+	@Cacheable(value = "subsStateNames")
+	List<AbstracDictionary> findByNameRuContainsIgnoreCaseOrNameEnContainsIgnoreCase(String nameRu, String nameEn);
 
 }

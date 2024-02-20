@@ -3,11 +3,14 @@ package by.com.lifetech.billingapi.models.dto;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import by.com.lifetech.billingapi.wsdl.ChainResultElement;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
 @Data
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class SubscriberInfDto {
 
 	Long accountId;
@@ -27,6 +30,7 @@ public class SubscriberInfDto {
 	String firstName;
 	String lastName;
 	String middleName;
+	String companyName;
 	@Schema(description = "Credit limit for corporate subscribers", example = "500")
 	double lineSpendingLimit;
 	double lineMain;
@@ -36,6 +40,10 @@ public class SubscriberInfDto {
 	double lineBonus;
 	int paidObligations;
 	int remainObligations;
+	
+	public void setActivationDate(String activationDate) {
+		this.activationDate = LocalDateTime.parse(activationDate);
+	}
 
 	public SubscriberInfDto(List<ChainResultElement> chainResultList) {
 		super();
@@ -76,6 +84,9 @@ public class SubscriberInfDto {
 				break;
 			case "firstName":
 				this.firstName = el.getValue().toString();
+				break;
+			case "companyName":
+				this.companyName = el.getValue().toString();
 				break;
 			case "contractType":
 				this.contractType = new ContractTypeDto(el.getValue().toString(), "");

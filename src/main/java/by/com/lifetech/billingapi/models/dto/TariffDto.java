@@ -17,4 +17,10 @@ public class TariffDto {
 	@Schema(description = "Tariff name", example = "Infinite")
 	private String name;
 
+	public TariffDto(String code) {
+		super();
+		this.code = code;
+		this.name = "";
+	}
+
 }

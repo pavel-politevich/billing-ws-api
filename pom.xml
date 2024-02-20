@@ -11,7 +11,7 @@
 	</parent>
 	<groupId>by.com.lifetech</groupId>
 	<artifactId>billing-ws-api</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>11</version>
 	<name>billing-ws-api</name>
 	<description>One billing API</description>
 	<packaging>jar</packaging>
@@ -64,6 +64,10 @@
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web-services</artifactId>
+		</dependency>
+		<dependency>
+		    <groupId>org.springframework.boot</groupId>
+		    <artifactId>spring-boot-starter-security</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -140,7 +144,31 @@
 				</executions>
 			</plugin>
 		</plugins>
+		<resources>
+	        <resource>
+	            <directory>src/main/resources</directory>
+	            <filtering>true</filtering>
+	        </resource>
+   		 </resources>
 	</build>
+
+	<profiles>
+		<profile>
+			<id>dev</id>
+			<activation>
+				<activeByDefault>true</activeByDefault>
+			</activation>
+			<properties>
+				<profileActive>dev</profileActive>
+			</properties>
+		</profile>
+		<profile>
+			<id>prod</id>
+			<properties>
+				<profileActive>prod</profileActive>
+			</properties>
+		</profile>
+	</profiles>
 
 <!--<distributionManagement>
         <repository>

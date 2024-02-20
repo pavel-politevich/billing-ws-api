@@ -15,4 +15,12 @@ public class ContractTypeDto {
 
 	@Schema(description = "Contract type name", example = "Individual Prepaid")
 	private String name;
+
+	public ContractTypeDto(String code) {
+		super();
+		this.code = code;
+		this.name = "";
+	}
+	
+	
 }

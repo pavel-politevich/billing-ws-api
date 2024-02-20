@@ -1,17 +1,17 @@
 package by.com.lifetech.billingapi.models.dto.service_response;
 
-import by.com.lifetech.billingapi.configurations.properties.TransactionIdConfig;
+import by.com.lifetech.billingapi.configurations.properties.LogInfoConfig;
 import by.com.lifetech.billingapi.models.enums.ServiceResultCode;
+import io.swagger.v3.oas.annotations.media.Schema;
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Component;
 
 @Data
-@Component
 @AllArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class ServiceResponseDto<T> {
@@ -20,8 +20,11 @@ public class ServiceResponseDto<T> {
 
     private String resultCode;
     private String transactionId;
+    @Schema(description = "The object may be missing")
     private String resultDescription;
+    @Schema(description = "The object may be missing")
     private ServiceBusinessError businessError;
+    @Schema(description = "The object may be missing")
     private T resultMap;
 
     public ServiceResponseDto() {
@@ -30,7 +33,7 @@ public class ServiceResponseDto<T> {
 
     public ServiceResponseDto<T> setTransactionIdFromMDC() {
         try {
-            transactionId = TransactionIdConfig.getTransactionId();
+            transactionId = LogInfoConfig.getTransactionId();
         } catch (Exception e) {
             logger.error("Error when get TransactionId: " + e.getMessage());
         }

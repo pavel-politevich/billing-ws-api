@@ -1,5 +1,6 @@
 package by.com.lifetech.billingapi.models.repository.dictionary;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.cache.annotation.Cacheable;
@@ -13,4 +14,7 @@ public interface RegistrationTypeRepository extends CrudRepository<RegistrationT
 
 	@Cacheable(value = "registrationTypes", key = "#regTypeCode")
 	Optional<RegistrationType> findByRegistrationTypeCode(@Param("regTypeCode") String regTypeCode);
+	
+	@Cacheable(value = "regTypeNames")
+	List<RegistrationType> findByNameRuContainsIgnoreCaseOrNameEnContainsIgnoreCase(String nameRu, String nameEn);
 }
