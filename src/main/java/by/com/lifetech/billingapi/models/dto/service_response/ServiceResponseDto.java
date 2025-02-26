@@ -49,4 +49,20 @@ public class ServiceResponseDto<T> {
         resultCode = ServiceResultCode.INTERNAL_ERROR.name();
         return this;
     }
+
+    public ServiceResponseDto<T> getDefaultErrorResponseWithDescription(String description) {
+        resultDescription = description;
+        return setDefaultErrorResponse();
+    }
+
+    @Override
+    public String toString() {
+        return "ServiceResponseDto(" +
+                "resultCode=" + resultCode +
+                ", transactionId=" + transactionId +
+                (resultDescription == null ? "" : ", resultDescription=" + resultDescription) +
+                (businessError == null ? "" : ", businessError=" + businessError) +
+                (resultMap == null ? "" : ", resultMap=" + resultMap) +
+                ')';
+    }
 }

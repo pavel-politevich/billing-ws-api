@@ -20,6 +20,6 @@ public enum Lang {
 			if (s.toString().equals(v.toUpperCase()))
 				return s;
 		}
-		throw new BusinessException("Billing Lang for " + v + " not found");
+		throw new BusinessException(BusinessErrorCode.ENTITY_NOT_FOUND.name(), "Billing Lang for " + v + " not found");
 	}
 }

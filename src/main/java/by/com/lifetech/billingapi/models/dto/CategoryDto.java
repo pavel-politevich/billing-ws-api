@@ -14,4 +14,10 @@ public class CategoryDto {
 	private String code;
 	@Schema(description = "category name", example = "Infinite for 15,9 rub")
 	private String name;
+	
+	public CategoryDto(String code) {
+		super();
+		this.code = code;
+		this.name = "";
+	}
 }

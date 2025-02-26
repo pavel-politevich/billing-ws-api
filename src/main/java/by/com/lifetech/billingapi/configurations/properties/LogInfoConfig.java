@@ -10,6 +10,10 @@ public class LogInfoConfig {
     public static final String CURRENT_USER_NAME = "user";
     public static final String REQ_START_TIME = "startTime";
 
+    private LogInfoConfig() {
+        throw new IllegalStateException("Utility class");
+    }
+
     public static String getTransactionId () {
         return MDC.get(TRANSACTION_ID_NAME);
     }

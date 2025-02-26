@@ -17,4 +17,7 @@ public interface RegistrationTypeRepository extends CrudRepository<RegistrationT
 	
 	@Cacheable(value = "regTypeNames")
 	List<RegistrationType> findByNameRuContainsIgnoreCaseOrNameEnContainsIgnoreCase(String nameRu, String nameEn);
+
+	@Cacheable(value = "registrationTypesAll")
+	List<RegistrationType> findAll();
 }

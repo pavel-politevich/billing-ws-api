@@ -2,12 +2,8 @@ package by.com.lifetech.billingapi.models.entity;
 
 import java.time.LocalDateTime;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import by.com.lifetech.billingapi.models.dto.CategoryDto;
-import by.com.lifetech.billingapi.models.dto.RegistrationTypeDto;
-import by.com.lifetech.billingapi.models.dto.TariffDto;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -57,34 +53,28 @@ public class RegistrationHistory {
 	@Column(name = "SALES_POINT")
 	private String salesPoint;
 
-	@JsonIgnore
 	@Column(name = "TARIFF")
-	private String tariff;
+	private String tariffCode;
 
-	@JsonIgnore
 	@Column(name = "CATEGORY")
-	private String category;
+	private String categoryCode;
 
 	@Column(name = "IDENTIFICATION_CODE")
 	private String identificationCode;
 
-	@JsonIgnore
 	@Column(name = "REGISTRATION_TYPE")
-	private String registrationType;
+	private String registrationTypeCode;
 
 	@Column(name = "URL_DOCUMENT")
 	private String urlDocument;
 
 	@Transient
-	@JsonProperty(value = "tariff")
-	private TariffDto tariffDto;
+	private String tariffName;
 
 	@Transient
-	@JsonProperty(value = "category")
-	private CategoryDto categoryDto;
+	private String categoryName;
 
 	@Transient
-	@JsonProperty(value = "registrationType")
-	private RegistrationTypeDto registrationTypeDto;
+	private String registrationTypeName;
 
 }

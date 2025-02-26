@@ -13,26 +13,38 @@ import lombok.Data;
 public class GetInformationSubscriberDto {
 
 	@JsonProperty("language_id")
-	String language_id;
+	String languageId;
 	
 	@JsonProperty("tariff_plan")
-	String tariff_plan;
+	String tariffPlan;
 	
 	@JsonProperty("state")
 	String state;
 	
 	@JsonProperty("line_lvl")
-	String line_lvl;
+	String lineLevel;
 	
 	@JsonProperty("use_common_main")
-	String use_common_main;
+	String useCommonMain;
 	
 	@JacksonXmlElementWrapper(useWrapping = false, localName = "balance")
-	List<GetInformationBalanceDto> balance;
+	@JsonProperty("balance")
+	List<GetInformationBalanceDto> balances;
 	
 	@JsonProperty("account_id")
-	String account_id;
+	String accountId;
 	
 	@JsonProperty("text")
 	String text;
+
+	@JsonProperty("MSISDN")
+	String msisdn;
+	
+	public String getTariffPlan() {
+		if (tariffPlan != null) {
+			return tariffPlan.substring(tariffPlan.indexOf("_") + 1);
+		} else {
+			return tariffPlan;
+		}
+	}
 }

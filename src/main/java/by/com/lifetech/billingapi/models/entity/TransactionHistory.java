@@ -1,24 +1,18 @@
 package by.com.lifetech.billingapi.models.entity;
 
+import by.com.lifetech.billingapi.models.dto.TransactionTypeDto;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import jakarta.persistence.*;
+import lombok.*;
+
 import java.time.LocalDateTime;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
-import by.com.lifetech.billingapi.models.dto.TransactionTypeDto;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
-import jakarta.persistence.SequenceGenerator;
-import jakarta.persistence.Table;
-import jakarta.persistence.Transient;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-
 @Entity
-@Table(name = "TRANSACTION_HISTORY")
-@Data
+@Table(name = "TRANSACTION_HISTORY", schema = "tm_cim")
+@Getter
+@Setter
+@ToString
 @NoArgsConstructor
 @AllArgsConstructor
 public class TransactionHistory {
@@ -33,9 +27,11 @@ public class TransactionHistory {
 	private LocalDateTime entryDate;
 	
 	@Column(name = "A_CONTRACT_CODE")
+	@JsonProperty("aContractCode")
 	private String aContractCode;
 	
 	@Column(name = "A_MOBILE_NO")
+	@JsonProperty("aMobileNo")
 	private String aMobileNo;
 	
 	@Column(name = "A_SUBSCRIBER_LOCATION")
@@ -53,9 +49,11 @@ public class TransactionHistory {
 	@Column(name = "PARENT_CODE")
 	private Long parentCode;
 	
-	@JsonIgnore
 	@Column(name = "TRANSACTION_TYPE_CODE")
 	private Long transactionTypeCode;
+	
+	@Transient
+	private String transactionTypeName;
 	
 	@Column(name = "COMMENTS")
 	private String comments;
@@ -67,9 +65,9 @@ public class TransactionHistory {
 	private String ngsCode;
 	
 	@Column(name = "LOAD_TO_CH")
-	private String loadToCh;
+	private String loadToCh = "Y";
 	
 	@Transient
+	@JsonIgnore
 	private TransactionTypeDto transactionType;
-
 }

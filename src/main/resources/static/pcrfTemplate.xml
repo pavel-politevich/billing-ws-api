@@ -1,0 +1,24 @@
+<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:rm="rm:soap" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+   <soapenv:Header>
+      <ns1:header xsi:type="ns1:authenticationHeader" xmlns:ns1="http://nemip.netzwert.ag/aaa/wsdl/provisioning/bwm">
+         <authentication xsi:type="ns1:authentication">
+            <userPass xsi:type="ns1:userPass">
+               <username xsi:type="xsd:string">${username}</username>
+               <password xsi:type="xsd:string">${password}</password>
+            </userPass>
+         </authentication>
+      </ns1:header>
+   </soapenv:Header>
+   <soapenv:Body>
+      <rm:getSubscriberAllService>
+         <inPara>
+            <subscriber>
+               <attribute>
+                  <key>usrIdentifier</key>
+                  <value>IMSI</value>
+               </attribute>
+            </subscriber>
+         </inPara>
+      </rm:getSubscriberAllService>
+   </soapenv:Body>
+</soapenv:Envelope>

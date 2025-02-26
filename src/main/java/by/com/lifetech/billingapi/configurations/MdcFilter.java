@@ -1,6 +1,7 @@
 package by.com.lifetech.billingapi.configurations;
 
 import java.io.IOException;
+import java.io.Serial;
 
 import by.com.lifetech.billingapi.configurations.properties.LogInfoConfig;
 import org.slf4j.MDC;
@@ -14,6 +15,7 @@ import jakarta.servlet.http.HttpServletResponse;
 
 @WebFilter
 public class MdcFilter extends HttpFilter {
+    @Serial
     private static final long serialVersionUID = 1196284995672260349L;
 
     @Override

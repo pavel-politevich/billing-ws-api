@@ -3,9 +3,9 @@ package by.com.lifetech.billingapi.models.dto;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import by.com.lifetech.billingapi.models.dto.cboss.CreEvent;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
-import by.com.lifetech.billingapi.wsdl.ChainResultElement;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
@@ -20,13 +20,25 @@ public class SubscriberInfDto {
 	String contractId;
 	@Schema(description = "ICCID 19 digits", example = "893750306180538449")
 	String iccid;
+	@Schema(description = "IMSI 15 digits", example = "257040111236666")
+	String imsi;
 	SubscriberStateDto state;
 	SegmentDto segment;
 	TariffDto tariff;
-	RiskLevelDto riskLevel;
+	CategoryDto category;
 	LocalDateTime activationDate;
+	LocalDateTime lcDateFrom;
+	LocalDateTime lcDateTo;
+	LocalDateTime lastReloadDate;
+	LocalDateTime lastDeactDate;
 	ContractTypeDto contractType;
 	LineLevelDto lineLevel;
+	UniversalDictionary riskLevel;
+	UniversalDictionary riskFraud;
+	UniversalDictionary subProfileRisk;
+	UniversalDictionary geoRisk;
+	UniversalDictionary finRisk;
+	UniversalDictionary community;
 	String firstName;
 	String lastName;
 	String middleName;
@@ -38,85 +50,9 @@ public class SubscriberInfDto {
 	double linePenalty;
 	double reservedLineMain;
 	double lineBonus;
+	double lineDebt;
+	double linePPDebt;
 	int paidObligations;
 	int remainObligations;
-	
-	public void setActivationDate(String activationDate) {
-		this.activationDate = LocalDateTime.parse(activationDate);
-	}
-
-	public SubscriberInfDto(List<ChainResultElement> chainResultList) {
-		super();
-		for (ChainResultElement el : chainResultList) {
-			switch (el.getName()) {
-			case "state":
-				this.state = new SubscriberStateDto(el.getValue().toString(), "");
-				break;
-			case "segment":
-				this.segment = new SegmentDto(el.getValue().toString(), "");
-				break;
-			case "iccid":
-				this.iccid = el.getValue().toString();
-				break;
-			case "lastName":
-				this.lastName = el.getValue().toString();
-				break;
-			case "lineLevel":
-				this.lineLevel = new LineLevelDto(el.getValue().toString(), "");
-				break;
-			case "accountId":
-				this.accountId = Long.parseLong(el.getValue().toString());
-				break;
-			case "tariffCode":
-				this.tariff = new TariffDto(el.getValue().toString(), "");
-				break;
-			case "activationDate":
-				this.activationDate = LocalDateTime.parse(el.getValue().toString());
-				break;
-			case "contractId":
-				this.contractId = el.getValue().toString();
-				break;
-			case "riskLevel":
-				this.riskLevel = new RiskLevelDto(el.getValue().toString(), "");
-				break;
-			case "middleName":
-				this.middleName = el.getValue().toString();
-				break;
-			case "firstName":
-				this.firstName = el.getValue().toString();
-				break;
-			case "companyName":
-				this.companyName = el.getValue().toString();
-				break;
-			case "contractType":
-				this.contractType = new ContractTypeDto(el.getValue().toString(), "");
-				break;
-			case "lineMain":
-				this.lineMain = Double.parseDouble(el.getValue().toString());
-				break;
-			case "remainObligations":
-				this.remainObligations = Double.valueOf(el.getValue().toString()).intValue();
-				break;
-			case "lineBonus":
-				this.lineBonus = Double.parseDouble(el.getValue().toString());
-				break;
-			case "linePenalty":
-				this.linePenalty = Double.parseDouble(el.getValue().toString());
-				break;
-			case "reservedLineMain":
-				this.reservedLineMain = Double.parseDouble(el.getValue().toString());
-				break;
-			case "paidObligations":
-				this.paidObligations = Double.valueOf(el.getValue().toString()).intValue();
-				break;
-			case "lineSpendingLimit":
-				this.lineSpendingLimit = Double.parseDouble(el.getValue().toString());
-				break;
-			}
-		}
-	}
-
-	public SubscriberInfDto() {
-	}
-
+	List<CreEvent> reservations;
 }

@@ -17,4 +17,7 @@ public interface LevelRiskFraudRepository extends CrudRepository<LevelRiskFraud,
 
 	@Cacheable(value = "levelRiskNames")
 	List<AbstracDictionary> findByNameRuContainsIgnoreCaseOrNameEnContainsIgnoreCase(String nameRu, String nameEn);
+
+	@Cacheable(value = "levelRiskAll")
+	List<LevelRiskFraud> findAll();
 }

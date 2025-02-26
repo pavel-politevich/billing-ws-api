@@ -14,7 +14,8 @@ import jakarta.xml.ws.WebEndpoint;
 import jakarta.xml.ws.WebServiceClient;
 import jakarta.xml.ws.WebServiceException;
 import jakarta.xml.ws.WebServiceFeature;
-
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 /**
@@ -23,7 +24,6 @@ import jakarta.xml.ws.WebServiceFeature;
  * Generated source version: 3.0
  * 
  */
-//@Component
 @WebServiceClient(name = "ChainAPI", targetNamespace = "http://chain.api.ws.rtn.idr.astelit.ukr/", wsdlLocation = "classpath:wsdl/chain-service?wsdl")
 public class ChainAPI_Service
     extends Service
@@ -32,7 +32,7 @@ public class ChainAPI_Service
     private final static URL CHAINAPI_WSDL_LOCATION;
     private final static WebServiceException CHAINAPI_EXCEPTION;
     private final static QName CHAINAPI_QNAME = new QName("http://chain.api.ws.rtn.idr.astelit.ukr/", "ChainAPI");
-    
+    static Logger logger = LoggerFactory.getLogger(ChainAPI_Service.class);
     
 
 
@@ -44,8 +44,7 @@ public class ChainAPI_Service
         try {
 			prop.load(input);
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+            logger.error(e.getMessage());
 		}
     	
         URL url = null;

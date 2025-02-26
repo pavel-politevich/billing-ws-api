@@ -16,4 +16,7 @@ public interface TransactionTypeRepository extends CrudRepository<TransactionTyp
 
 	@Cacheable(value = "thTypeNames")
 	List<TransactionType> findByNameRuContainsIgnoreCaseOrNameEnContainsIgnoreCase(String nameRu, String nameEn);
+
+	@Cacheable(value = "transactionTypesAll")
+	List<TransactionType> findAll();
 }

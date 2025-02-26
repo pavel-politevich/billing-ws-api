@@ -28,7 +28,7 @@ public class MdcInterceptor implements HandlerInterceptor {
         
         if (MDC.get(LogInfoConfig.TRANSACTION_ID_NAME) != null && MDC.get(LogInfoConfig.REQ_START_TIME) != null) {
             long time = System.currentTimeMillis() - Long.parseLong(MDC.get(LogInfoConfig.REQ_START_TIME));
-            logger.info("Request time: {} ms.", time);
+            logger.debug("Request time: {} ms.", time);
         }
         MDC.remove(LogInfoConfig.TRANSACTION_ID_NAME);
         MDC.remove(LogInfoConfig.CURRENT_USER_NAME);

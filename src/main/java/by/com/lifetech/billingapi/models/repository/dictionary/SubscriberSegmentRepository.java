@@ -17,4 +17,7 @@ public interface SubscriberSegmentRepository extends CrudRepository<SubscriberSe
 	
 	@Cacheable(value = "segmentNames")
 	List<AbstracDictionary> findByNameRuContainsIgnoreCaseOrNameEnContainsIgnoreCase(String nameRu, String nameEn);
+
+	@Cacheable(value = "segmentsAll")
+	List<SubscriberSegment> findAll();
 }

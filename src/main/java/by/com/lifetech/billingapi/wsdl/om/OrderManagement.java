@@ -15,6 +15,8 @@ import jakarta.xml.ws.WebEndpoint;
 import jakarta.xml.ws.WebServiceClient;
 import jakarta.xml.ws.WebServiceException;
 import jakarta.xml.ws.WebServiceFeature;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 /**
@@ -31,6 +33,7 @@ public class OrderManagement
     private final static URL ORDERMANAGEMENT_WSDL_LOCATION;
     private final static WebServiceException ORDERMANAGEMENT_EXCEPTION;
     private final static QName ORDERMANAGEMENT_QNAME = new QName("astelit.ukr:om", "OrderManagement");
+    static Logger logger = LoggerFactory.getLogger(OrderManagement.class);
 
     static {
     	
@@ -40,8 +43,7 @@ public class OrderManagement
         try {
 			prop.load(input);
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+            logger.error(e.getMessage());
 		}
         
         URL url = null;

@@ -18,7 +18,7 @@ public class ProfileResultToServiceResponseConverter {
 	Logger logger = LoggerFactory.getLogger(ProfileResultToServiceResponseConverter.class);
 
     public ServiceResponseDto<Map<String, Object>> getServiceResponse (FulfillResult profileResult) {
-    	ServiceResponseDto<Map<String, Object>> serviceResponse = new ServiceResponseDto<Map<String, Object>>();
+    	ServiceResponseDto<Map<String, Object>> serviceResponse = new ServiceResponseDto<>();
         convert (profileResult, serviceResponse);
         return serviceResponse;
     }
@@ -27,19 +27,22 @@ public class ProfileResultToServiceResponseConverter {
         try {
         	if (profileResult.getCommonResult().getResultCode().equals("000000")) {
         		serviceResponse.setResultCode(ServiceResultCode.SUCCESS.name());
-        	} 
-        	else {
-        		serviceResponse.setResultCode(profileResult.getCommonResult().getResultCode().toString());
+        	} else if (profileResult.getCommonResult().getResultCode().equals("000010")) {
+                serviceResponse.setResultCode(ServiceResultCode.VALIDATION_ERROR.name());
+            } else {
+        		serviceResponse.setResultCode(ServiceResultCode.INTERNAL_ERROR.name());
         	}
-            
-            StringBuilder resultDescription = new StringBuilder().append("Profile transactionId: ")
-                    .append(profileResult.getTransactionId().toString())
-                    .append(profileResult.getCommonResult().getResultDescription() != null ? ";" + profileResult.getCommonResult().getResultDescription() : "");
-            serviceResponse.setResultDescription(resultDescription.toString());
+
+            String resultDescription = "Profile transactionId: " +
+                    profileResult.getTransactionId() +
+                    (profileResult.getCommonResult().getResultDescription() != null ? ";" + profileResult.getCommonResult().getResultDescription() : "");
+            serviceResponse.setResultDescription(resultDescription);
 
             ScenarioErrorResult scenarioError = profileResult.getScenarioError();
-            if (scenarioError != null) {
-                serviceResponse.setBusinessError(new ServiceBusinessError(scenarioError.getCode()
+            String resultBusinessCode = profileResult.getCommonResult().getResultBusinessCode();
+            if (resultBusinessCode != null) {
+                serviceResponse.setResultCode(ServiceResultCode.BUSINESS_ERROR.name());
+            	serviceResponse.setBusinessError(new ServiceBusinessError(resultBusinessCode
                         , scenarioError.getDescription()));
             }
 
@@ -50,7 +53,7 @@ public class ProfileResultToServiceResponseConverter {
             }
         } catch (Exception e) {
             serviceResponse.setDefaultErrorResponse();
-            logger.error("Error in parsing profile result to service response: " + e.getMessage());
+            logger.error("Error in parsing profile result to service response: {}", e.getMessage());
         }
         return serviceResponse;
     }

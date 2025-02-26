@@ -17,4 +17,7 @@ public interface ContractTypeRepository extends CrudRepository<ContractType, Str
 	
 	@Cacheable(value = "contrTypeNames")
 	List<AbstracDictionary> findByNameRuContainsIgnoreCaseOrNameEnContainsIgnoreCase(String nameRu, String nameEn);
+
+	@Cacheable(value = "contractTypeAll")
+	List<ContractType> findAll();
 }

@@ -1,6 +1,7 @@
 package by.com.lifetech.billingapi.models.entity.dictionary;
 
 import by.com.lifetech.billingapi.models.enums.Lang;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
@@ -39,6 +40,7 @@ public class RegistrationType implements CodeNameDictionary {
 		}
 	}
 
+	@JsonIgnore
 	@Override
 	public String getCode() {
 		return registrationTypeCode;

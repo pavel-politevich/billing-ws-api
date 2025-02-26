@@ -1,6 +1,7 @@
 package by.com.lifetech.billingapi.models.entity.dictionary;
 
 import by.com.lifetech.billingapi.models.enums.Lang;
+import com.fasterxml.jackson.annotation.JsonGetter;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
@@ -48,9 +49,14 @@ public class TransactionType implements CodeNameDictionary {
 			return this.nameRu;
 		}
 	}
-	
+
 	@Override
 	public String getCode() {
 		return code.toString();
+	}
+
+	@JsonGetter("code")
+	public Long getCodeOriginal() {
+		return code;
 	}
 }

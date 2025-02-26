@@ -18,4 +18,7 @@ public interface SubscriptionTypeRepository extends CrudRepository<SubscriptionT
 	@Cacheable(value = "subscrTypeNames")
 	List<AbstracDictionary> findByNameRuContainsIgnoreCaseOrNameEnContainsIgnoreCase(String nameRu, String nameEn);
 
+	@Cacheable(value = "subscriptionTypesAll")
+	List<SubscriptionType> findAll();
+
 }
