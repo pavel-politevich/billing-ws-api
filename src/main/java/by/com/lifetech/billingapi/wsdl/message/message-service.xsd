@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--Published by JAX-WS RI at http://jax-ws.dev.java.net. RI's version is Metro/2.2.0-1 (tags/2.2.0u1-7139; 2012-06-02T10:55:19+0000) JAXWS-RI/2.2.6-2 JAXWS/2.2 svn-revision#unknown.--><xs:schema version="1.0" targetNamespace="http://astelit.ukr/idr/sms/message/" xmlns:tns="http://astelit.ukr/idr/sms/message/" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:complexType name="Message">
+    <xs:complexContent>
+      <xs:extension base="tns:BaseMessage">
+        <xs:sequence>
+          <xs:element name="externalId" type="xs:string"/>
+          <xs:element name="dest" type="xs:string"/>
+          <xs:element name="params" type="tns:Param" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
+          <xs:element name="processExpiration" type="xs:dateTime" minOccurs="0"/>
+          <xs:element name="controlParameters" type="tns:controlParameter" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:complexType name="BaseMessage" abstract="true">
+    <xs:sequence>
+      <xs:element name="idrCode" type="xs:string"/>
+      <xs:element name="source" type="xs:string"/>
+      <xs:element name="text" type="xs:string"/>
+      <xs:element name="timeControl" type="tns:TimeControl"/>
+      <xs:element name="schedulTime" type="xs:dateTime"/>
+      <xs:element name="identification" type="tns:Identification"/>
+      <xs:element name="lang" type="tns:Language"/>
+      <xs:element name="extension" type="tns:Extension"/>
+      <xs:element name="msgId" type="xs:string" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="Param">
+    <xs:simpleContent>
+      <xs:extension base="xs:string">
+        <xs:attribute name="key" type="xs:string" use="required"/>
+        <xs:attribute name="lang" type="xs:string"/>
+        <xs:attribute name="translit" type="xs:boolean"/>
+      </xs:extension>
+    </xs:simpleContent>
+  </xs:complexType>
+  <xs:complexType name="controlParameter" abstract="true">
+    <xs:sequence>
+      <xs:element name="name" type="xs:string" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="smppOptionalParameter">
+    <xs:complexContent>
+      <xs:extension base="tns:smppParameter">
+        <xs:sequence>
+          <xs:element name="type" type="tns:smppParameterType" minOccurs="0"/>
+          <xs:element name="value" type="xs:anyType" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:complexType name="smppParameter" abstract="true">
+    <xs:complexContent>
+      <xs:extension base="tns:controlParameter">
+        <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:complexType name="mm7Parameter">
+    <xs:complexContent>
+      <xs:extension base="tns:controlParameter">
+        <xs:sequence>
+          <xs:element name="type" type="tns:mm7ParameterType" minOccurs="0"/>
+          <xs:element name="value" type="xs:string" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:complexType name="smppMandatoryParameter">
+    <xs:complexContent>
+      <xs:extension base="tns:smppParameter">
+        <xs:sequence>
+          <xs:element name="value" type="xs:string" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:complexType name="TimeControl">
+    <xs:sequence/>
+    <xs:attribute name="schedulDays" type="xs:int"/>
+    <xs:attribute name="btStart" type="xs:string"/>
+    <xs:attribute name="btEnd" type="xs:string"/>
+  </xs:complexType>
+  <xs:complexType name="Identification">
+    <xs:sequence/>
+    <xs:attribute name="channel" type="xs:string"/>
+    <xs:attribute name="campaignId" type="xs:string"/>
+  </xs:complexType>
+  <xs:complexType name="Language">
+    <xs:sequence>
+      <xs:element name="billingLang" type="xs:string" minOccurs="0"/>
+      <xs:element name="commonLang" type="tns:CommonLang" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="CommonLang">
+    <xs:sequence/>
+    <xs:attribute name="code" type="xs:string"/>
+    <xs:attribute name="isTranslit" type="xs:boolean"/>
+  </xs:complexType>
+  <xs:complexType name="Extension" abstract="true">
+    <xs:sequence/>
+  </xs:complexType>
+  <xs:complexType name="WapPushExtension">
+    <xs:complexContent>
+      <xs:extension base="tns:Extension">
+        <xs:sequence>
+          <xs:element name="url" type="xs:string"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:complexType name="FlashSmsExtension">
+    <xs:complexContent>
+      <xs:extension base="tns:Extension">
+        <xs:sequence/>
+        <xs:attribute name="flash" type="xs:boolean"/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:complexType name="MediaMessageExtension">
+    <xs:complexContent>
+      <xs:extension base="tns:Extension">
+        <xs:sequence>
+          <xs:element name="smil" type="xs:string" minOccurs="0"/>
+          <xs:element name="attachments" type="tns:Attachment" minOccurs="0" maxOccurs="unbounded"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:complexType name="Attachment">
+    <xs:simpleContent>
+      <xs:extension base="xs:string">
+        <xs:attribute name="contentId" type="xs:string"/>
+        <xs:attribute name="mimeType" type="xs:string"/>
+      </xs:extension>
+    </xs:simpleContent>
+  </xs:complexType>
+  <xs:complexType name="BulkMessage" abstract="true">
+    <xs:sequence/>
+  </xs:complexType>
+  <xs:complexType name="CustomBulkMessage">
+    <xs:complexContent>
+      <xs:extension base="tns:BulkMessage">
+        <xs:sequence>
+          <xs:element name="messages" type="tns:Message" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:complexType name="CommonBulkMessage">
+    <xs:complexContent>
+      <xs:extension base="tns:BulkMessage">
+        <xs:sequence>
+          <xs:element name="commonConf" type="tns:BaseMessage"/>
+          <xs:element name="destinations" type="tns:MessageDest" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:complexType name="MessageDest">
+    <xs:sequence>
+      <xs:element name="params" type="tns:Param" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
+    </xs:sequence>
+    <xs:attribute name="dest" type="xs:string" use="required"/>
+    <xs:attribute name="externalId" type="xs:string"/>
+  </xs:complexType>
+  <xs:simpleType name="smppParameterType">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="INT"/>
+      <xs:enumeration value="STRING"/>
+      <xs:enumeration value="BYTE"/>
+      <xs:enumeration value="SHORT"/>
+      <xs:enumeration value="NULL"/>
+      <xs:enumeration value="OCTETSTRING"/>
+      <xs:enumeration value="COCTETSTRING"/>
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="mm7ParameterType">
+    <xs:restriction base="xs:string"/>
+  </xs:simpleType>
+</xs:schema>

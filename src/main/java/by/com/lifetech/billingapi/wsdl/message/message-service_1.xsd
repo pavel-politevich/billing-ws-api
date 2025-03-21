@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--Published by JAX-WS RI at http://jax-ws.dev.java.net. RI's version is Metro/2.2.0-1 (tags/2.2.0u1-7139; 2012-06-02T10:55:19+0000) JAXWS-RI/2.2.6-2 JAXWS/2.2 svn-revision#unknown.--><xs:schema version="1.0" targetNamespace="http://api.ws.rtn.idr.astelit.ukr/" xmlns:tns="http://api.ws.rtn.idr.astelit.ukr/" xmlns:ns1="http://astelit.ukr/idr/sms/message/" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:import namespace="http://astelit.ukr/idr/sms/message/" schemaLocation="message-service.xsd"/>
+  <xs:element name="getAllMessages" type="tns:getAllMessages"/>
+  <xs:element name="getAllMessagesResponse" type="tns:getAllMessagesResponse"/>
+  <xs:element name="transmitBulkMessage" type="tns:transmitBulkMessage"/>
+  <xs:element name="transmitBulkMessageResponse" type="tns:transmitBulkMessageResponse"/>
+  <xs:element name="transmitMessage" type="tns:transmitMessage"/>
+  <xs:element name="transmitMessageResponse" type="tns:transmitMessageResponse"/>
+  <xs:complexType name="getAllMessages">
+    <xs:sequence/>
+  </xs:complexType>
+  <xs:complexType name="getAllMessagesResponse">
+    <xs:sequence>
+      <xs:element name="result" type="tns:getAllMessagesResult" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="getAllMessagesResult">
+    <xs:complexContent>
+      <xs:extension base="tns:generalResult">
+        <xs:sequence>
+          <xs:element name="messages" type="tns:messageDescriptor" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:complexType name="generalResult">
+    <xs:sequence>
+      <xs:element name="buildVersion" type="xs:string" minOccurs="0"/>
+      <xs:element name="error" type="xs:string" minOccurs="0"/>
+      <xs:element name="invokationTime" type="xs:long"/>
+      <xs:element name="resultCode" type="tns:resultCodeType" minOccurs="0"/>
+      <xs:element name="resultDescription" type="xs:string" minOccurs="0"/>
+      <xs:element name="transactionId" type="xs:anyType" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="messageDescriptor">
+    <xs:sequence>
+      <xs:element name="messageCode" type="xs:string" minOccurs="0"/>
+      <xs:element name="templates">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element name="entry" minOccurs="0" maxOccurs="unbounded">
+              <xs:complexType>
+                <xs:sequence>
+                  <xs:element name="key" minOccurs="0" type="xs:string"/>
+                  <xs:element name="value" minOccurs="0" type="xs:string"/>
+                </xs:sequence>
+              </xs:complexType>
+            </xs:element>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="transmitMessage">
+    <xs:sequence>
+      <xs:element name="message" type="ns1:Message" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="transmitMessageResponse">
+    <xs:sequence>
+      <xs:element name="result" type="tns:generalResult" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="transmitBulkMessage">
+    <xs:sequence>
+      <xs:element name="bulkMessage" type="ns1:BulkMessage" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="transmitBulkMessageResponse">
+    <xs:sequence>
+      <xs:element name="result" type="tns:generalResult" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:simpleType name="resultCodeType">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="SUCCESS"/>
+      <xs:enumeration value="VALIDATION_FAILURE"/>
+      <xs:enumeration value="CHAIN_ERROR"/>
+      <xs:enumeration value="ERROR"/>
+      <xs:enumeration value="CHAIN_VALIDATION_FAILURE"/>
+      <xs:enumeration value="CHAIN_RUNTIME_ERROR"/>
+      <xs:enumeration value="CHAIN_ILLEGAL_STATE"/>
+      <xs:enumeration value="CHAIN_DATABASE_ERROR"/>
+      <xs:enumeration value="CHAIN_TRANSACTION_ERROR"/>
+      <xs:enumeration value="CHAIN_BUSINESS_ERROR"/>
+      <xs:enumeration value="CHAIN_SEMAPHORE_BUSY_ERROR"/>
+      <xs:enumeration value="CHAIN_SEMAPHORE_MAX_COUNT_REACHED_ERROR"/>
+      <xs:enumeration value="CHAIN_UNKNOWN_ERROR"/>
+    </xs:restriction>
+  </xs:simpleType>
+</xs:schema>

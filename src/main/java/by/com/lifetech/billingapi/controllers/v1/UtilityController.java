@@ -1,18 +1,19 @@
 package by.com.lifetech.billingapi.controllers.v1;
 
+import by.com.lifetech.billingapi.configurations.annotations.NotLoggingResponse;
 import by.com.lifetech.billingapi.configurations.properties.inputchecking.MsisdnDefaultCheck;
 import by.com.lifetech.billingapi.exceptions.BusinessException;
 import by.com.lifetech.billingapi.exceptions.InternalException;
+import by.com.lifetech.billingapi.models.dto.HibernateDetailedStatistic;
 import by.com.lifetech.billingapi.models.dto.service_response.ServiceResponseDto;
 import by.com.lifetech.billingapi.models.dto.suspend.SuspendLineSnapshot;
 import by.com.lifetech.billingapi.models.requests.CallChainRequest;
 import by.com.lifetech.billingapi.models.requests.DefaultChainServiceRequest;
 import by.com.lifetech.billingapi.models.requests.THistoryEventRequest;
-import by.com.lifetech.billingapi.services.CacheService;
-import by.com.lifetech.billingapi.services.ChainService;
-import by.com.lifetech.billingapi.services.SubscriberOperationsService;
-import by.com.lifetech.billingapi.services.SuspendService;
+import by.com.lifetech.billingapi.services.*;
+import by.com.lifetech.billingapi.configurations.annotations.NotLogging;
 import by.com.lifetech.billingapi.wsdl.ChainResult;
+import by.com.lifetech.billingapi.wsdl.message.MessageDescriptor;
 import io.swagger.v3.oas.annotations.Hidden;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -41,6 +42,8 @@ public class UtilityController {
     private final SubscriberOperationsService subscriberOperationsService;
     private final SuspendService suspendService;
     private final CacheService cacheService;
+    private final HibernateStatsService hibernateStatsService;
+    private final SmsService smsService;
 
     @Hidden
     @GetMapping("/test")
@@ -140,4 +143,33 @@ public class UtilityController {
         return ResponseEntity.ok(subscriberOperationsService.writeTransactionHistory(req));
     }
 
+    @Hidden
+    @GetMapping("/hibernate/stat")
+    @NotLogging
+    ResponseEntity<HibernateDetailedStatistic> getHibernateStats() {
+        return ResponseEntity.ok(hibernateStatsService.returnDetailedStatistics());
+    }
+
+    @Hidden
+    @GetMapping(value = "hibernate/stat/changestatus", produces = MediaType.TEXT_PLAIN_VALUE)
+    ResponseEntity<String> changeHibernateStatsStatus(@RequestParam("status") String status) {
+        hibernateStatsService.changeHibernateStatisticsStatus(status);
+        return ResponseEntity.ok("SUCCESS");
+    }
+
+    @Hidden
+    @GetMapping("/sms/text-all")
+    @Operation(summary = "Get text of all sms")
+    @NotLoggingResponse
+    ResponseEntity<ServiceResponseDto<Map<String, Object>>> getAllSmsText() throws InternalException {
+        return ResponseEntity.ok(smsService.getAllSms());
+    }
+
+    @Hidden
+    @GetMapping("/sms/text")
+    @Operation(summary = "Get text of all sms and return one")
+    @NotLoggingResponse
+    ResponseEntity<ServiceResponseDto<MessageDescriptor>> getSmsText(@RequestParam("code") String code) throws InternalException {
+        return ResponseEntity.ok(smsService.getSmsByCode(code));
+    }
 }

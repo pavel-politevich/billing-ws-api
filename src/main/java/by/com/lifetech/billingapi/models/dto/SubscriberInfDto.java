@@ -55,4 +55,6 @@ public class SubscriberInfDto {
 	int paidObligations;
 	int remainObligations;
 	List<CreEvent> reservations;
+	@Schema(description = "Credit service information", example = "Мой лимит 25: оплатить 25 руб до 08.03.2025")
+	String creditService;
 }

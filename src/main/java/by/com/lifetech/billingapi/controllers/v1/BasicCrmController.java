@@ -10,6 +10,9 @@ import by.com.lifetech.billingapi.models.entity.TransactionHistory;
 import by.com.lifetech.billingapi.models.enums.CommonCheckAnswer;
 import by.com.lifetech.billingapi.models.enums.Lang;
 import by.com.lifetech.billingapi.models.requests.*;
+import by.com.lifetech.billingapi.models.requests.autopay.AutopayMainServiceRequest;
+import by.com.lifetech.billingapi.models.requests.autopay.AutopayRecipientServiceRequest;
+import by.com.lifetech.billingapi.models.requests.autopay.AutopayServiceRequest;
 import by.com.lifetech.billingapi.services.*;
 import by.life.crmadvancedsearch.model.SearchCriterion;
 import io.swagger.v3.oas.annotations.Hidden;
@@ -45,6 +48,7 @@ public class BasicCrmController {
 	private final SubscriberInfoService subscriberInfoService;
     private final LifeChannelsService lifeChannelsService;
 	private final ProductOfferingService productOfferingService;
+	private final SmsService smsService;
 
 
 	@Operation(summary = "Find registration history", description = "with SearchCriterion")
@@ -138,7 +142,7 @@ public class BasicCrmController {
 
 	@GetMapping("/autopay/amount")
 	@Operation(summary = "Get amount for write off from subscriber's card", description = "For Autopayment by necessity service")
-	ResponseEntity<ServiceResponseDto<Map<String, BigDecimal>>> getAmountForAutoPayment(@RequestParam("msisdn") @MsisdnDefaultCheck String msisdn) throws InternalException, BusinessException {
+	ResponseEntity<ServiceResponseDto<Map<String, Object>>> getAmountForAutoPayment(@RequestParam("msisdn") @MsisdnDefaultCheck String msisdn) throws InternalException, BusinessException {
 		return ResponseEntity.ok(lifeChannelsService.getAmountForAutoPayment(msisdn));
 	}
 
@@ -151,7 +155,7 @@ public class BasicCrmController {
 	@PostMapping("/autopay/main")
 	@Operation(summary = "Activate autopayment main service", description = "For Autopayment by necessity service")
 	ResponseEntity<ServiceResponseDto<Map<String, Object>>> activateAutoPayMainService(
-			@RequestBody @Validated AutopayServiceRequest req) throws InternalException, BusinessException {
+			@RequestBody @Validated AutopayMainServiceRequest req) throws InternalException, BusinessException {
 		return ResponseEntity.ok(lifeChannelsService.activateAutoPayMainService(req));
 	}
 
@@ -165,14 +169,22 @@ public class BasicCrmController {
 	@PostMapping("/autopay/recipient")
 	@Operation(summary = "Activate autopayment recipient service", description = "For Autopayment by necessity service")
 	ResponseEntity<ServiceResponseDto<Map<String, Object>>> activateAutoPayRecipientService(
-			@RequestBody @Validated AutopayServiceRequest req) throws InternalException, BusinessException {
+			@RequestBody @Validated AutopayRecipientServiceRequest req) throws InternalException, BusinessException {
 		return ResponseEntity.ok(lifeChannelsService.activateAutoPayRecipientService(req));
 	}
 
 	@DeleteMapping("/autopay/recipient")
 	@Operation(summary = "Deactivate autopayment recipient service", description = "For Autopayment by necessity service")
 	ResponseEntity<ServiceResponseDto<Map<String, Object>>> deactivateAutoPayRecipientService(
-			@RequestBody @Validated AutopayServiceRequest req) throws InternalException, BusinessException {
+			@RequestBody @Validated AutopayRecipientServiceRequest req) throws InternalException, BusinessException {
 		return ResponseEntity.ok(lifeChannelsService.deactivateAutoPayRecipientService(req));
 	}
+
+	@PostMapping("/sms/send/basic")
+	@Operation(summary = "Send sms with parameters")
+	ResponseEntity<ServiceResponseDto<Map<String, Object>>> sendSms(
+			@RequestBody @Validated SmsBasicRequest request) throws InternalException {
+		return ResponseEntity.ok(smsService.sendSmsWithParameter(request));
+	}
 }
+

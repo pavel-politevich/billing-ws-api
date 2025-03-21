@@ -7,7 +7,9 @@ import by.com.lifetech.billingapi.models.entity.TransactionHistory;
 import by.com.lifetech.billingapi.models.enums.*;
 import by.com.lifetech.billingapi.models.repository.TransactionHistoryRepository;
 import by.com.lifetech.billingapi.models.repository.account.AccountExTblRepository;
-import by.com.lifetech.billingapi.models.requests.AutopayServiceRequest;
+import by.com.lifetech.billingapi.models.requests.autopay.AutopayMainServiceRequest;
+import by.com.lifetech.billingapi.models.requests.autopay.AutopayRecipientServiceRequest;
+import by.com.lifetech.billingapi.models.requests.autopay.AutopayServiceRequest;
 import by.com.lifetech.billingapi.models.requests.BasicTransactionRequest;
 import by.com.lifetech.billingapi.models.requests.CheckNonResidentPassportRequest;
 import by.com.lifetech.billingapi.utils.ChainResultToServiceResponseConverter;
@@ -174,14 +176,12 @@ public class LifeChannelsService {
         return accountExTbl.findAccountInfoByConditionsTuple(conditions,outputParameters);
     }
 
-    public ServiceResponseDto<Map<String, BigDecimal>> getAmountForAutoPayment(String msisdn) throws InternalException, BusinessException {
-        ServiceResponseDto<Map<String, BigDecimal>> response = new ServiceResponseDto<Map<String, BigDecimal>>().setDefaultSuccessResponse();
+    public ServiceResponseDto<Map<String, Object>> getAmountForAutoPayment(String msisdn) throws InternalException, BusinessException {
+        ServiceResponseDto<Map<String, Object>> response = new ServiceResponseDto<Map<String, Object>>().setDefaultSuccessResponse();
 
         ChainResult chainResult = chainService.executeChain(ChainType.OM, "autopayment_amount", Map.of("msisdn", msisdn));
-        BigDecimal amount = new BigDecimal(ChainResultToServiceResponseConverter
-                .getObjectFromResultList(chainResult, "amount").toString());
 
-        response.setResultMap(Map.of("amount", amount));
+        response.setResultMap(ChainResultToServiceResponseConverter.convertResultListToMap(chainResult));
         return response;
     }
 
@@ -208,7 +208,7 @@ public class LifeChannelsService {
         return serviceResponse;
     }
 
-    public ServiceResponseDto<Map<String, Object>> activateAutoPayMainService(AutopayServiceRequest req) throws BusinessException, InternalException {
+    public ServiceResponseDto<Map<String, Object>> activateAutoPayMainService(AutopayMainServiceRequest req) throws BusinessException, InternalException {
         return callAutopaymentServiceChain("autopayment_main", "act", req);
     }
 
@@ -216,11 +216,11 @@ public class LifeChannelsService {
         return callAutopaymentServiceChain("autopayment_main", "deact", req);
     }
 
-    public ServiceResponseDto<Map<String, Object>> activateAutoPayRecipientService(AutopayServiceRequest req) throws BusinessException, InternalException {
+    public ServiceResponseDto<Map<String, Object>> activateAutoPayRecipientService(AutopayRecipientServiceRequest req) throws BusinessException, InternalException {
         return callAutopaymentServiceChain("autopayment_recipient", "act", req);
     }
 
-    public ServiceResponseDto<Map<String, Object>> deactivateAutoPayRecipientService(AutopayServiceRequest req) throws BusinessException, InternalException {
+    public ServiceResponseDto<Map<String, Object>> deactivateAutoPayRecipientService(AutopayRecipientServiceRequest req) throws BusinessException, InternalException {
         return callAutopaymentServiceChain("autopayment_recipient", "deact", req);
     }
 
@@ -230,7 +230,9 @@ public class LifeChannelsService {
         map.put("productOfferingCode", "S_" + service.toUpperCase());
         map.put("channel", req.getChannel());
         if (service.equals("autopayment_recipient")) {
-            map.put("main_msisdn", req.getMainMsisdn());
+            map.put("main_msisdn", ((AutopayRecipientServiceRequest)req).getMainMsisdn());
+        } else if (operation.equals("act")) {
+            map.put("rec_msisdn", ((AutopayMainServiceRequest)req).getRecipientMsisdn());
         }
 
         ChainResult chainResult = chainService.executeChain(ChainType.OM, String.format("%s_%s", service, operation), map);

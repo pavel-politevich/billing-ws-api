@@ -10,6 +10,7 @@ import by.com.lifetech.billingapi.models.requests.SimChangeRequest;
 import by.com.lifetech.billingapi.utils.ChainResultToServiceResponseConverter;
 import by.com.lifetech.billingapi.wsdl.ChainResult;
 import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.MapperFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.json.JsonMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
@@ -24,7 +25,7 @@ import java.util.Map;
 public class SimStockService {
     private final ChainService chainService;
     private final NumberSelectionCategoryRepository selectionCategoryRepository;
-    private final ObjectMapper objectMapper = JsonMapper.builder().addModule(new JavaTimeModule()).build();
+    private final ObjectMapper objectMapper = JsonMapper.builder().addModule(new JavaTimeModule()).configure(MapperFeature.USE_ANNOTATIONS, false).build();
     Logger logger = LoggerFactory.getLogger(SimStockService.class);
 
     public ServiceResponseDto<Map<String, Object>> changeSim (SimChangeRequest req) throws BusinessException, InternalException {

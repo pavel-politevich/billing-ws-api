@@ -521,3 +521,4 @@ public class SubscriberInfoService {
         return documentTypes.contains(passportType);
     }
 }
+

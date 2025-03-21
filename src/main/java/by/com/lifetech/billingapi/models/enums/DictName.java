@@ -58,3 +58,4 @@ public enum DictName {
 		throw new BusinessException(BusinessErrorCode.ENTITY_NOT_FOUND.name(), "Dictionary type " + v + " not found");
 	}
 }
+

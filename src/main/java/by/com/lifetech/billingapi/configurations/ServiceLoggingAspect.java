@@ -1,5 +1,6 @@
 package by.com.lifetech.billingapi.configurations;
 
+import by.com.lifetech.billingapi.configurations.annotations.NotLoggingResponse;
 import by.com.lifetech.billingapi.exceptions.BusinessException;
 import by.com.lifetech.billingapi.exceptions.ChainException;
 import by.com.lifetech.billingapi.exceptions.IPayException;
@@ -14,6 +15,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 
+import java.lang.reflect.Method;
 import java.util.List;
 
 @Aspect
@@ -21,7 +23,7 @@ import java.util.List;
 public class ServiceLoggingAspect {
     private final Logger logger = LoggerFactory.getLogger(ServiceLoggingAspect.class);
 
-    @Pointcut("execution(* by.com.lifetech.billingapi.controllers.v1.*.*(..)) && !@annotation(by.com.lifetech.billingapi.utils.NotLogging)")
+    @Pointcut("execution(* by.com.lifetech.billingapi.controllers.v1.*.*(..)) && !@annotation(by.com.lifetech.billingapi.configurations.annotations.NotLogging)")
     public void controllerMethods() {}
 
     @Before("controllerMethods()")
@@ -67,7 +69,13 @@ public class ServiceLoggingAspect {
     @AfterReturning(pointcut = "controllerMethods()", returning = "result")
     public void logServiceMethodExit(JoinPoint joinPoint, Object result) {
         String methodName = joinPoint.getSignature().getName();
-        logger.info("STOP calling {} with result: {}", methodName, parseResult(result));
+        Method method = ((MethodSignature) joinPoint.getSignature()).getMethod();
+
+        if (method.isAnnotationPresent(NotLoggingResponse.class)) {
+            logger.info("STOP calling {};", methodName);
+        } else {
+            logger.info("STOP calling {} with result: {}", methodName, parseResult(result));
+        }
     }
 
     @AfterThrowing(pointcut = "controllerMethods()", throwing = "ex")

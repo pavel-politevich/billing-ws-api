@@ -9,7 +9,7 @@ import by.com.lifetech.billingapi.models.enums.Lang;
 import by.com.lifetech.billingapi.models.requests.ChargeDetailsRequest;
 import by.com.lifetech.billingapi.models.requests.ChargesRequest;
 import by.com.lifetech.billingapi.services.SubscriberChargesService;
-import by.com.lifetech.billingapi.utils.NotLogging;
+import by.com.lifetech.billingapi.configurations.annotations.NotLogging;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;

@@ -226,4 +226,14 @@ public class ActivationChecksService {
         }
         return checkResult;
     }
+
+    public ServiceResponseDto<Map<String, Object>> getOfferByIccid(String iccid, String lang, String agent)
+            throws BusinessException, InternalException {
+        Map<String, Object> inputParams = new HashMap<>();
+        inputParams.put("ICCID", iccid);
+        inputParams.put("LANG", lang);
+        inputParams.put("AGENT", agent);
+        ChainResult chainResult = chainService.executeChain(ChainType.CIM, "getOffer", inputParams);
+        return new ChainResultToServiceResponseConverter().getServiceResponse(chainResult);
+    }
 }

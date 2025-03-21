@@ -40,6 +40,7 @@ public class RegistrationController {
     private final ProductOfferingService productOfferingService;
     private final DeviceService deviceService;
 
+
     @Operation(summary = "Check Blacklist")
     @PostMapping("/check/blacklist")
     ResponseEntity<ServiceResponseDto<ActivationCheckResultResponse>> checkBlacklist(
@@ -217,5 +218,15 @@ public class RegistrationController {
     @GetMapping("/get-offer/otp")
     ResponseEntity<ServiceResponseDto<List<AssetType>>> getOtpDevicesForRegistration() {
         return ResponseEntity.ok(deviceService.getOtpDevices());
+    }
+
+    @Operation(summary = "Get offer by ICCID for lifeID")
+    @GetMapping("/get-offer/lifeid")
+    ResponseEntity<ServiceResponseDto<Map<String, Object>>> getOfferByIccid(
+            @RequestParam("iccid") @NotEmpty String iccid,
+            @RequestParam(value = "lang", required = false) String lang,
+            @RequestParam(value = "agent", required = false) String agent
+    ) throws InternalException, BusinessException {
+        return ResponseEntity.ok(activationChecksService.getOfferByIccid(iccid, lang, agent));
     }
 }

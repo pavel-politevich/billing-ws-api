@@ -1,0 +1,12 @@
+<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:hss="http://www.huawei.com/HSS">
+   <soapenv:Header>
+    <hss:Username>${username}</hss:Username>
+    <hss:Password>${password}</hss:Password>
+       </soapenv:Header>
+   <soapenv:Body>
+      <hss:LST_SUB>
+         <hss:ISDN>MSISDN</hss:ISDN>
+         <hss:DETAIL>TRUE</hss:DETAIL>
+      </hss:LST_SUB>
+   </soapenv:Body>
+</soapenv:Envelope>

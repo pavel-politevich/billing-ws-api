@@ -30,3 +30,4 @@ public interface HssAttrRepository extends CrudRepository<HssAttribute, HssAttri
 	@Cacheable(value = "hssCheckAttrAll")
 	List<HssAttribute> findAll();
 }
+

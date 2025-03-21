@@ -7,7 +7,7 @@ import by.com.lifetech.billingapi.models.enums.DictSearchType;
 import by.com.lifetech.billingapi.models.enums.FullDictName;
 import by.com.lifetech.billingapi.models.enums.Lang;
 import by.com.lifetech.billingapi.services.DictionaryService;
-import by.com.lifetech.billingapi.utils.NotLogging;
+import by.com.lifetech.billingapi.configurations.annotations.NotLogging;
 import by.life.crmadvancedsearch.model.SearchCriterion;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
